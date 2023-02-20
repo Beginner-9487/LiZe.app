@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.lize_app">
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <!--  ==============================================================================================  -->
+    <!--  BLUETOOTH  -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <!-- Needed only if your app makes the device discoverable to Bluetooth devices. -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <!-- Needed only if your app communicates with already-paired Bluetooth devices. -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!-- If you say the feature is required for your app, then the Google Play store will hide your app from users on devices lacking those features. For this reason, you should only set the required attribute to true if your app can't work without the feature. -->
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+
+    <!-- Android 6.0以后，这两个权限是必须的，蓝牙扫描周围的设备需要获取模糊的位置信息。这两个权限属于同一组危险权限，在清单文件中声明之后，还需要再运行时动态获取。 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+
+    <!--  ==============================================================================================  -->
+    <!--  Write Excel  -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <!--  ==============================================================================================  -->
+    <application
+        android:requestLegacyExternalStorage="true"
+
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.LiZe_App"
+
+        android:name=".BLEApplication"
+        >
+
+        <!-- Home -->
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Central -->
+        <activity
+            android:name=".ui.central.CentralActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="example.lize_app.action.central.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.central.CentralDetailsActivity"
+            android:exported="false">
+
+        </activity>
+
+<!--        <activity android:name=".Activity_Splash">-->
+<!--            <intent-filter>-->
+<!--                <category android:name="android.intent.category.INFO" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+
+        <activity
+            android:name=".ui.peripheral.PeripheralActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="example.lize_app.action.peripheral.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>
