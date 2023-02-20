@@ -1,0 +1,2 @@
+# LiZe.app
+BLE communication
