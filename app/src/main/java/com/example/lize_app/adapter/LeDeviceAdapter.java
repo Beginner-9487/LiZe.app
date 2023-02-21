@@ -1,6 +1,5 @@
 package com.example.lize_app.adapter;
 
-import org.w3c.dom.Text;
 import com.example.lize_app.R;
 import com.example.lize_app.data.BLEDataServer;
 
@@ -50,8 +49,11 @@ public class LeDeviceAdapter extends RecyclerView.Adapter<LeDeviceAdapter.Device
         holder.deviceName.setText("Name: " + bt.getName());
         holder.deviceAddress.setText("Address: " + bt.getAddress());
 
+        Log.e("LeDeviceAdapter", bt.getName() + ": connectedState: " + String.valueOf(data.connectedState));
+
         // TODO Color
         if (data != null) {
+
             if (data.connectedState == BluetoothProfile.STATE_CONNECTED) {
                 holder.deviceCard.setBackgroundResource(R.color.Connected_Card);
                 holder.deviceState.setText("State: Connected");

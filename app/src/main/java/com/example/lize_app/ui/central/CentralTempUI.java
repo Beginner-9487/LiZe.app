@@ -3,6 +3,7 @@ package com.example.lize_app.ui.central;
 import com.example.lize_app.R;
 import com.example.lize_app.data.BLEDataServer;
 import com.example.lize_app.ui.base.BaseFragment;
+import com.example.lize_app.utils.Log;
 import com.example.lize_app.utils.My_Excel_File;
 import com.example.lize_app.utils.OtherUsefulFunction;
 
@@ -24,7 +25,6 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +47,8 @@ public class CentralTempUI extends BaseFragment implements CentralMvpView {
     public void onAttach(Context context) {
         super.onAttach(context);
         getFragmentComponent().inject(this);
+        mCentralPresenter.attachView(this);
+        mCentralPresenter.attach_for_Data();
     }
 
     @Override
@@ -65,6 +67,7 @@ public class CentralTempUI extends BaseFragment implements CentralMvpView {
             @Override
             public void onClick(View v) {
                 mCentralPresenter.Send_All_C(hexStringToByteArray(command_edit.getText().toString()));
+                command_edit.setText("");
             }
         });
 
@@ -73,6 +76,8 @@ public class CentralTempUI extends BaseFragment implements CentralMvpView {
             public void onClick(View v) {
 
                 if(checkExternalStoragePermission()) {
+
+                    mCentralPresenter.getRemoteDevices();
 
                     My_Excel_File file = new My_Excel_File();
                     String sdCardPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator;
@@ -85,16 +90,20 @@ public class CentralTempUI extends BaseFragment implements CentralMvpView {
                     // Add value in the cell
                     int index_devices = 1;
                     int cursor = 0;
+                    Log.e("mData.size(): " + String.valueOf(mData.size()));
                     for (Map.Entry<BluetoothDevice, HashMap<BluetoothGattService, HashMap<BluetoothGattCharacteristic, ArrayList<byte[]>>>> data:mData.entrySet()) {
                         file.write_file(0, 1, cursor, "Device" + String.valueOf(index_devices) + ": " + data.getKey().getName());
                         int index_service = 1;
+                        Log.e("mData.data.size(): " + String.valueOf(data.getValue().size()));
                         for (Map.Entry<BluetoothGattService, HashMap<BluetoothGattCharacteristic, ArrayList<byte[]>>>s:data.getValue().entrySet()) {
                             file.write_file(0, 2, cursor, "S" + String.valueOf(index_service));
                             int index_characteristic = 1;
+                            Log.e("mData.data.s.size(): " + String.valueOf(s.getValue().size()));
                             for (Map.Entry<BluetoothGattCharacteristic, ArrayList<byte[]>>c:s.getValue().entrySet()) {
                                 file.write_file(0, 3, cursor, "C" + String.valueOf(index_characteristic));
+                                Log.e("mData.data.s.c.size(): " + String.valueOf(c.getValue().size()));
                                 for(int k=0; k<c.getValue().size(); k++) {
-                                    file.write_file(0, 4+k, cursor, c.getValue().get(k).toString());
+                                    file.write_file(0, 4+k, cursor, byteArrayToHexStringTo(c.getValue().get(k)));
                                 }
                                 cursor++;
                             }
@@ -123,8 +132,10 @@ public class CentralTempUI extends BaseFragment implements CentralMvpView {
 
     @Override
     public void showBLEData(BLEDataServer.BLEData data) {
+        Log.e(data.device.getName());
         mData.put(data.device, data.Values);
-        data_text.setText(String.valueOf(new Date().getTime()));
+//        data_text.setText(data.device.getName());
+//        data_text.setText(String.valueOf(new Date().getTime()));
     }
 
     public byte[] hexStringToByteArray(String s) {
@@ -137,6 +148,15 @@ public class CentralTempUI extends BaseFragment implements CentralMvpView {
         }
         return data;
 
+    }
+
+    public String byteArrayToHexStringTo(byte[] bytes) {
+
+        String s = "";
+        for (byte b:bytes) {
+            s += ((b<0x10)?"0":"") + Integer.toHexString(b) + ", ";
+        }
+        return s;
     }
 
     private boolean checkExternalStoragePermission() {

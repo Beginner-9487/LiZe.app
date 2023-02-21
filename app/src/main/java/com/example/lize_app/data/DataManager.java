@@ -2,7 +2,6 @@ package com.example.lize_app.data;
 
 import android.bluetooth.BluetoothDevice;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;

@@ -1,6 +1,5 @@
 package com.example.lize_app.ui.central;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Handler;
 import android.os.Message;
@@ -10,16 +9,11 @@ import com.example.lize_app.data.DataManager;
 import com.example.lize_app.ui.base.BasePresenter;
 import com.example.lize_app.utils.Log;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -45,32 +39,39 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
     @Override
     public void attachView(CentralMvpView centralView) {
         super.attachView(centralView);
+    }
 
+    public void attach_for_Data() {
         // send all deivces to view here;
         //List<BluetoothDevice> devices = mDataManager.getRemoteDevices();
         List<BLEDataServer.BLEData> datas = mDataManager.getRemoteBLEDatas();
 
+        Log.e(String.valueOf(datas.size()));
         for(BLEDataServer.BLEData data: datas) {
             getMvpView().showBLEData(data);
         }
-        startReadRssi();
     }
 
     @Override
     public void detachView() {
         super.detachView();
-        if (mScanDisposable != null && !mScanDisposable.isDisposed()) {
-            mScanDisposable.dispose();
-        }
 
-        for (Disposable s : mConnectedDisposable.values()) {
-            if (!s.isDisposed()) {
-                s.dispose();
-            }
-        }
-
-        mConnectedDisposable.clear();
-        stopReadRssi();
+//        for (BluetoothDevice device:mConnectedDisposable.keySet()) {
+//            disconnectGatt(device);
+//        }
+//
+//        if (mScanDisposable != null && !mScanDisposable.isDisposed()) {
+//            mScanDisposable.dispose();
+//        }
+//
+//        for (Disposable s : mConnectedDisposable.values()) {
+//            if (!s.isDisposed()) {
+//                s.dispose();
+//            }
+//        }
+//
+//        mConnectedDisposable.clear();
+//        stopReadRssi();
     }
 
     public void getRemoteDevices() {
@@ -146,7 +147,6 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
 
     public void disconnectGatt(BluetoothDevice device) {
         try {
-            checkViewAttached();
             mDataManager.disconnectGatt(device);
         } catch (Exception e) {
             Log.e(e.getMessage());
@@ -192,7 +192,7 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
         }
     };
 
-    private void startReadRssi() {
+    public void startReadRssi() {
         if (mHandler.hasMessages(READ_RSSI_REPEAT)) {
             return;
         }
@@ -220,10 +220,6 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
 
     public List<BLEDataServer.BLEData> getRemoteBLEDatas() {
         return mDataManager.getRemoteBLEDatas();
-    }
-
-    public void attach_getAllBondedDevices(CentralMvpView centralView) {
-        super.attachView(centralView);
     }
 
     public void getAllBondedDevices() {

@@ -11,9 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.core.content.ContextCompat;
-
-import com.example.lize_app.fragment.PermissionAgreeFragment;
 import com.example.lize_app.utils.OtherUsefulFunction;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 

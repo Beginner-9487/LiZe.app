@@ -200,17 +200,19 @@ public class CentralDetailsActivity extends BaseActivity implements CentralMvpVi
         super.onStart();
 
         mCentralPresenter.attachView(this);
+        mCentralPresenter.attach_for_Data();
+        mCentralPresenter.startReadRssi();
 
-        mCentralPresenter.connectGatt(mRemoteDevice);
+//        mCentralPresenter.connectGatt(mRemoteDevice);
 
-        startReadRssi();
+//        startReadRssi();
     }
 
     @Override
     public void onStop() {
         super.onStop();
 
-        stopReadRssi();
+//        stopReadRssi();
         mCentralPresenter.detachView();
     }
 

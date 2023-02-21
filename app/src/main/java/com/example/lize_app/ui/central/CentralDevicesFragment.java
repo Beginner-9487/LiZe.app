@@ -4,6 +4,7 @@ import com.example.lize_app.R;
 import com.example.lize_app.adapter.LeDeviceAdapter;
 import com.example.lize_app.data.BLEDataServer;
 import com.example.lize_app.ui.base.BaseFragment;
+import com.example.lize_app.utils.Log;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -138,6 +139,7 @@ public class CentralDevicesFragment extends BaseFragment implements CentralMvpVi
 
     @Override
     public void showBLEData(BLEDataServer.BLEData data) {
+        Log.e(data.device.getName());
         mLeDeviceAdapter.showBLEData(data);
         mLeDeviceAdapter.notifyDataSetChanged();
     }

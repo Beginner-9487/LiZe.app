@@ -1,8 +1,6 @@
 package com.example.lize_app.ui.peripheral;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;

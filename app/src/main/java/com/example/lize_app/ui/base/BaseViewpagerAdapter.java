@@ -1,26 +1,10 @@
 package com.example.lize_app.ui.base;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.example.lize_app.BLEApplication;
-import com.example.lize_app.R;
-import com.example.lize_app.injector.component.ActivityComponent;
-import com.example.lize_app.injector.component.FragmentComponent;
 import com.example.lize_app.injector.component.ViewpagerAdapterComponent;
-import com.example.lize_app.injector.module.ActivityModule;
-import com.example.lize_app.injector.module.FragmentModule;
-import com.example.lize_app.injector.module.ViewpagerAdapterModule;
-import com.example.lize_app.ui.central.CentralScanFragment;
 
 // Since this is an object collection, use a FragmentStatePagerAdapter,
 // and NOT a FragmentPagerAdapter.

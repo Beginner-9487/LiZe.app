@@ -1,20 +1,15 @@
 package com.example.lize_app.fragment;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.lize_app.R;
-import com.example.lize_app.ui.main.MainActivity;
 
 public class PermissionAgreeFragment extends DialogFragment {
 

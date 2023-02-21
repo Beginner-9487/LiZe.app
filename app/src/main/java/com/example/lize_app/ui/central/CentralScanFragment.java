@@ -13,6 +13,8 @@ public class CentralScanFragment extends CentralDevicesFragment implements Centr
     public void onStart() {
         super.onStart();
         mCentralPresenter.attachView(this);
+        mCentralPresenter.attach_for_Data();
+        mCentralPresenter.startReadRssi();
         scanLeDevice(true);
     }
 
