@@ -28,7 +28,6 @@ public class CentralDevicesFragment extends BaseFragment implements CentralMvpVi
     SwipeRefreshLayout mRefreshLayout;
 
     private LeDeviceAdapter mLeDeviceAdapter;
-
     public LeDeviceAdapter getmLeDeviceAdapter() {
         return mLeDeviceAdapter;
     }
@@ -62,26 +61,17 @@ public class CentralDevicesFragment extends BaseFragment implements CentralMvpVi
 
             @Override
             public void onItemClicked(BluetoothDevice device, int position) {
-                Intent intent = new Intent(getActivity(), CentralDetailsActivity.class);
-
-                intent.putExtra(CentralDetailsActivity.EXTRAS_DEVICE_NAME, device.getName());
-                intent.putExtra(CentralDetailsActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
-
-                startActivity(intent);
+                startCentralDetailsActivity(device);
             }
 
             @Override
             public void onItemConnectionButtonClicked(BluetoothDevice device, int position, boolean connection_state_setting) {
-                if(connection_state_setting) {
-                    mCentralPresenter.connectGatt(device);
-                } else {
-                    mCentralPresenter.disconnectGatt(device);
-                }
+                connectGatt(device, connection_state_setting);
             }
 
             @Override
             public void onItemPairButtonClicked(BLEDataServer.BLEData data, int position, boolean bonding_state_setting) {
-                mCentralPresenter.createBond(data);
+                createBond(data);
             }
         });
 
@@ -139,10 +129,28 @@ public class CentralDevicesFragment extends BaseFragment implements CentralMvpVi
 
     @Override
     public void showBLEData(BLEDataServer.BLEData data) {
-        Log.e(data.device.getName());
+        // Log.e(data.device.getName());
         mLeDeviceAdapter.showBLEData(data);
         mLeDeviceAdapter.notifyDataSetChanged();
     }
 
     public void onRefreshSwipLayout() { }
+
+    public void startCentralDetailsActivity(BluetoothDevice device) {
+        Intent intent = new Intent(getActivity(), CentralDetailsActivity.class);
+        intent.putExtra(CentralDetailsActivity.EXTRAS_DEVICE_NAME, device.getName());
+        intent.putExtra(CentralDetailsActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+        startActivity(intent);
+    }
+    public void connectGatt(BluetoothDevice device, boolean connection_state_setting) {
+        if(connection_state_setting) {
+            mCentralPresenter.connectGatt(device);
+        } else {
+            mCentralPresenter.disconnectGatt(device);
+        }
+    }
+    public void createBond(BLEDataServer.BLEData data) {
+        mCentralPresenter.createBond(data);
+    }
+
 }

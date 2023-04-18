@@ -51,12 +51,13 @@ public class CentralActivity extends BaseActivity {
 
 //    @BindView(R.id.ViewPager)
     ViewPager mViewPager;
+    public ViewPager getViewPager() {
+        return mViewPager;
+    }
 
 //    private Unbinder unbinder;
 
     private static final int REQUEST_ENABLE_BT = 1;
-    // Stops scanning after 10 seconds.
-    private static final long SCAN_PERIOD = 10000;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,10 +92,6 @@ public class CentralActivity extends BaseActivity {
         }
 
         setup_ViewPager();
-
-//        getSupportFragmentManager().beginTransaction()
-//                .add(R.id.content, new CentralScanFragment(), "scan")
-//                .commit();
 
     }
 
@@ -157,7 +154,7 @@ public class CentralActivity extends BaseActivity {
         //4.指定activity_main.xml內標籤
 
         //5.初始化三個Fragment分頁
-        int page = 4;
+        int page = 3;
         titles = new String[page];
         fragments = new Fragment[page];
 
@@ -165,10 +162,10 @@ public class CentralActivity extends BaseActivity {
         for(int i=0; i<page; i++) {
             titles[i] = getResources().getStringArray(R.array.ViewPager_PageTitle)[i];
         }
-        fragments[0] = new CentralChartFragment();
-        fragments[1] = new CentralBondFragment();
-        fragments[2] = new CentralScanFragment();
-        fragments[3] = new CentralTempUI();
+        fragments[0] = new CentralScanFragment();
+        fragments[1] = new CentralTempUI();
+        fragments[2] = new CentralChartFragment();
+        //fragments[3] = new CentralBondFragment();
 
         //7.初始化轉換器
         adapter = new CentralViewpagerAdapter(getSupportFragmentManager(), titles, fragments);

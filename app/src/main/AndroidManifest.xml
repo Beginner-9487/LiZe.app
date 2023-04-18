@@ -78,6 +78,7 @@
 <!--            </intent-filter>-->
 <!--        </activity>-->
 
+        <!-- Peripheral -->
         <activity
             android:name=".ui.peripheral.PeripheralActivity"
             android:exported="false">

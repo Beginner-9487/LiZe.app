@@ -1,5 +1,7 @@
 package com.example.lize_app.injector.component;
 
+import com.example.lize_app.injector.PerViewpagerAdapter;
+import com.example.lize_app.injector.module.ViewpagerAdapterModule;
 import com.example.lize_app.ui.central.CentralViewpagerAdapter;
 
 import dagger.Component;
@@ -7,7 +9,8 @@ import dagger.Component;
 /**
  *
  */
-//@Component(dependencies = {ApplicationComponent.class}, modules = ViewpagerAdapterComponent.class)
+@PerViewpagerAdapter
+@Component(dependencies = ApplicationComponent.class, modules = ViewpagerAdapterModule.class)
 public interface ViewpagerAdapterComponent {
-//    void inject(CentralViewpagerAdapter viewpagerAdapter);
+    void inject(CentralViewpagerAdapter viewpagerAdapter);
 }

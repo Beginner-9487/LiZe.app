@@ -14,7 +14,7 @@ import dagger.Component;
  *
  */
 @PerFragment
-@Component(dependencies = {ApplicationComponent.class}, modules = FragmentModule.class)
+@Component(dependencies = ApplicationComponent.class, modules = FragmentModule.class)
 public interface FragmentComponent {
     void inject(CentralDevicesFragment fragment);
     void inject(CentralChartFragment fragment);

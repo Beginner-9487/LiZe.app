@@ -16,27 +16,75 @@
 
 package com.example.lize_app;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * This class includes a small subset of standard GATT attributes for demonstration purposes.
  */
 public class SampleGattAttributes {
-    private static HashMap<String, String> attributes = new HashMap();
-    public static String HEART_RATE_MEASUREMENT = "00002a37-0000-1000-8000-00805f9b34fb";
-    public static String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
+    public static HashMap<String, String> attributes = new HashMap();
+    public static ArrayList<String> subscribed_UUIDs = new ArrayList<>();
+    public static ArrayList<String> input_UUIDs = new ArrayList<>();
 
     static {
+
+        // ================================================================================
+        // attributes
+
         // Sample Services.
         attributes.put("0000180d-0000-1000-8000-00805f9b34fb", "Heart Rate Service");
         attributes.put("0000180a-0000-1000-8000-00805f9b34fb", "Device Information Service");
         // Sample Characteristics.
-        attributes.put(HEART_RATE_MEASUREMENT, "Heart Rate Measurement");
+        attributes.put("00002a37-0000-1000-8000-00805f9b34fb", "Heart Rate Measurement");
         attributes.put("00002a29-0000-1000-8000-00805f9b34fb", "Manufacturer Name String");
+
+        // C3 & C6
+        attributes.put("0000fff3-0000-1000-8000-00805f9b34fb", "C3");
+        attributes.put("0000fff6-0000-1000-8000-00805f9b34fb", "C6");
+
+        // ================================================================================
+        // subscribed
+        subscribed_UUIDs.add("0000fff6-0000-1000-8000-00805f9b34fb");
+
+        // ================================================================================
+        // input
+        input_UUIDs.add("0000fff3-0000-1000-8000-00805f9b34fb");
+
     }
 
+    public static String lookup(UUID uuid, String defaultName) {
+        return lookup(uuid.toString(), defaultName);
+    }
     public static String lookup(String uuid, String defaultName) {
         String name = attributes.get(uuid);
         return name == null ? defaultName : name;
+    }
+
+    public static boolean isIncluded(int type, String UUID) {
+        ArrayList<String> list;
+        switch(type){
+            case 0:
+                list = subscribed_UUIDs;
+                break;
+            case 1:
+                list = input_UUIDs;
+                break;
+            default:
+                list = new ArrayList<>();
+        }
+        for (String u:list) {
+            if(u.equals(UUID)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public static boolean checkSubscribed(String UUID) {
+        return isIncluded(0, UUID);
+    }
+    public static boolean checkInput(String UUID) {
+        return isIncluded(1, UUID);
     }
 }

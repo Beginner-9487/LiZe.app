@@ -9,9 +9,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
 
-    <color name="disconnected">#FFFF0000</color>
+    <color name="Disconnected_Light">#FFFF0000</color>
     <color name="Disconnected_Card">#33FF0000</color>
-    <color name="connected">#FF00FF00</color>
+    <color name="Connected_Light">#FF00FF00</color>
     <color name="Connected_Card">#3300FF00</color>
 
 <!--    <color name="disconnect_card">#FFFFEEFF</color>-->

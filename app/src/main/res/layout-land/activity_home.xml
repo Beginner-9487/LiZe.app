@@ -54,31 +54,31 @@
             android:paddingTop="@dimen/activity_vertical_margin">
 
             <Button
-                android:id="@+id/Central"
+                android:id="@+id/Central_Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/Central"
                 android:textAlignment="center"
-                app:layout_constraintBottom_toTopOf="@+id/Peripheral"
+                app:layout_constraintBottom_toTopOf="@+id/Peripheral_Button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="MissingConstraints" />
 
             <Button
-                android:id="@+id/Peripheral"
+                android:id="@+id/Peripheral_Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/Peripheral"
                 android:textAlignment="center"
-                app:layout_constraintBottom_toTopOf="@+id/About"
+                app:layout_constraintBottom_toTopOf="@+id/About_Button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Central"
+                app:layout_constraintTop_toBottomOf="@+id/Central_Button"
                 tools:ignore="MissingConstraints" />
 
             <Button
-                android:id="@+id/About"
+                android:id="@+id/About_Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/About"
@@ -86,7 +86,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Peripheral"
+                app:layout_constraintTop_toBottomOf="@+id/Peripheral_Button"
                 tools:ignore="MissingConstraints" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

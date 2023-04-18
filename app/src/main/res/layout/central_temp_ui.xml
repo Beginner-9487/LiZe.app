@@ -8,6 +8,8 @@
 
     <EditText
         android:id="@+id/Command_Edit"
+        android:maxLines="1"
+        android:inputType="text"
         android:hint="@string/Temp_Command_Hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,22 +18,54 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/C3_Send_Button" />
 
+    <RadioGroup
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/SeniorRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/C3_Send_Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Command_Edit">
+
+        <RadioButton
+            android:id="@+id/RadioLiZe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/LiZe"
+            android:checked="true"/>
+
+        <Space
+            android:layout_width="30dp"
+            android:layout_height="match_parent" />
+
+        <RadioButton
+            android:id="@+id/RadioXieZhiLong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/XieZhiLong"/>
+
+    </RadioGroup>
+
     <Button
         android:id="@+id/C3_Send_Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Temp_UI_C3"
-        app:layout_constraintBottom_toTopOf="@+id/Data_Text"
+        app:layout_constraintBottom_toTopOf="@+id/DataName_Text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Command_Edit" />
+        app:layout_constraintTop_toBottomOf="@+id/SeniorRadioGroup" />
 
-    <TextView
-        android:id="@+id/Data_Text"
-        android:hint="@string/Temp_Data"
+    <EditText
+        android:id="@+id/DataName_Text"
+        android:maxLines="1"
+        android:inputType="text"
+        android:hint="@string/Temp_DataName_Hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/FileName_Edit"
+        app:layout_constraintBottom_toTopOf="@+id/FileIndexLimit_Edit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/C3_Send_Button" />
@@ -47,24 +81,24 @@
 <!--        app:layout_constraintTop_toBottomOf="@+id/C3_Send_Button" />-->
 
     <EditText
-        android:id="@+id/FileName_Edit"
-        android:hint="@string/Temp_FileName_Hint"
+        android:id="@+id/FileIndexLimit_Edit"
+        android:maxLines="1"
+        android:inputType="number"
+        android:hint="@string/Temp_FileIndexLimit_Hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Demo.xls"
-        app:layout_constraintBottom_toTopOf="@+id/Save_Excel_Button"
+        app:layout_constraintBottom_toTopOf="@+id/TimeText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Data_Text" />
+        app:layout_constraintTop_toBottomOf="@+id/DataName_Text" />
 
-    <Button
-        android:id="@+id/Save_Excel_Button"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/TimeText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Temp_UI_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/FileName_Edit" />
+        app:layout_constraintTop_toBottomOf="@+id/FileIndexLimit_Edit" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

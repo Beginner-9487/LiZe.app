@@ -2,16 +2,16 @@
     <string name="app_name">LiZe_App</string>
     <!--    <string name="ble_not_supported">BLE not supported</string>-->
     <!--    <string name="My_BLE">My BLE</string>-->
-    <string name="scan_BLE">Scan BLE</string>
-    <string name="stop_scan_BLE">Stop</string>
+    <string name="ZoomOut">Zoom Out</string>
     <string name="No_BLE_Permission">No BLE Permission</string>
     <string name="No_Device_Connection">No device connection</string>
     <!--    <string name="connected">Connected to BLE</string>-->
     <!--    <string name="disconnected">Disconnected to BLE</string>-->
 
     <!--  Fragment  -->
-    <string name="Fragment_OK">OK</string>
-    <string name="Fragment_Cancel">Cancel</string>
+    <string name="Fragment_Reset">Reset</string>
+    <string name="Fragment_SelectAll">Select All</string>
+    <string name="Fragment_ClearAll">Clear All</string>
 
     <!--  LocationPermissionAgreeFragment  -->
     <string name="LocationPermissionTag">Location Permission</string>
@@ -28,59 +28,76 @@
     <string name="AboutDescription">Good people create those good stuff.</string>
 
     <!--  ======================================================================  -->
+    <!--  Central_Chart  -->
+    <string name="AboutShowLabelSelector">Show Datas</string>
+    <string name="AboutDeleteLabelSelector">Delete Datas</string>
+    <string name="AboutHighlightSelector">Enter to get a specific X.</string>
+    <!--  Name  -->
+    <string name="LabelName">LabelName</string>
+    <!--  X  -->
+    <string name="Voltage">Voltage</string>
+    <string name="Time">Time</string>
+    <string name="unknown_X_label">Unknown X</string>
+    <!--  Y  -->
+    <string name="Current">Current</string>
+    <string name="unknown_Y_label">Unknown Y</string>
+
+    <!--  ======================================================================  -->
     <!--  Central_Seletion_Device  -->
     <string name="Central_mode">Central Mode</string>
 
     <string name="ble_not_supported">BLE is not supported</string>
-    <string name="label_data">Data:</string>
-    <string name="label_device_address">Device address:</string>
-    <string name="label_state">State:</string>
-    <string name="no_data">No data</string>
-    <string name="connected">Connected</string>
-    <string name="disconnected">Disconnected</string>
-    <string name="central_mode">Central Mode</string>
     <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
 
-    <string name="unknown_device">Unknown device</string>
-    <string name="unknown_characteristic">Unknown characteristic</string>
-    <string name="unknown_service">Unknown service</string>
+    <!-- Label -->
+    <string name="DeviceName">Device Name</string>
+    <string name="DeviceAddress">Device Address</string>
+    <string name="RSSI">RSSI</string>
+    <string name="State">State</string>
+    <string name="Data">Data</string>
 
-    <!-- Menu items -->
-    <string name="menu_connect">Connect</string>
-    <string name="menu_disconnect">Disconnect</string>
-    <string name="menu_scan">Scan</string>
-    <string name="menu_stop">Stop</string>
-    <string name="central">Central</string>
-    <string name="peripheral">Peripheral</string>
+    <!-- Label Data -->
+    <string name="Connected">Connected</string>
+    <string name="Disconnected">Disconnected</string>
+
+    <string name="noData">No data</string>
+
+    <string name="UnknownDevice">Unknown device</string>
+    <string name="UnknownService">Unknown service</string>
+    <string name="UnknownCharacteristic">Unknown characteristic</string>
 
     <!-- listitem_device -->
-    <string name="listitem_device_RSSI">RSSI: </string>
-    <string name="listitem_device_State">State: </string>
     <string name="listitem_device_Btn_Connect">Connect</string>
     <string name="listitem_device_Btn_Disconnect">Disconnect</string>
     <string name="listitem_device_Btn_Pair">Pair</string>
     <string name="listitem_device_Btn_Unpair">Unpair</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <!-- ViewPager 的標頭 -->
     <string-array name="ViewPager_PageTitle">
-        <item>Chart</item>
-        <item>Bonded Devices</item>
         <item>Scanned Devices</item>
         <item>Temp UI</item>
+        <item>Chart</item>
+        <item>Bonded Devices</item>
     </string-array>
 
     <!--  ======================================================================  -->
 
-    <!-- Temp_UI-->
-    <string name="Temp_Command_Hint">Command</string>
+    <!-- Temp_UI -->
+    <string name="Temp_Command_Hint">Please enter the Command.</string>
     <string name="Temp_UI_C3">C3 Send</string>
-    <string name="Temp_Data">Data</string>
+    <string name="Temp_DataName_Hint">Please enter to name this data and file.</string>
     <string name="Temp_UI_C6">C6 Receive</string>
-    <string name="Temp_FileName_Hint">File Name</string>
+    <string name="Temp_FileIndexLimit_Hint">Please enter to limit the maximum index of saved files.</string>
     <string name="Temp_UI_save">Save Excel</string>
     <string name="Temp_UI_save_toast">Saving the Excel file succeeded.</string>
+
+    <!-- Senior -->
+    <string name="LiZe">LiZe</string>
+    <string name="XieZhiLong">XieZhiLong</string>
+
+    <!-- Excel -->
+    <string name="RawData">Raw Data</string>
+    <string name="SaveFileTime">Save File Time</string>
+    <string name="Number">Number</string>
 
 </resources>

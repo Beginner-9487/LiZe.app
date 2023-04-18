@@ -9,6 +9,7 @@ public class CentralViewpagerAdapter extends BaseViewpagerAdapter {
 
     public CentralViewpagerAdapter(FragmentManager fm, String[] Titles, Fragment[] Fragments) {
         super(fm, Titles, Fragments);
+        // getViewpagerAdapterComponent().inject(this);
     }
 
 }

@@ -33,8 +33,8 @@ public class CentralScanFragment extends CentralDevicesFragment implements Centr
     @Override
     public void onStop() {
         super.onStop();
-        getmLeDeviceAdapter().clearDevices();
-        getmLeDeviceAdapter().notifyDataSetChanged();
+        // getmLeDeviceAdapter().clearDevices();
+        // getmLeDeviceAdapter().notifyDataSetChanged();
         mCentralPresenter.detachView();
     }
 

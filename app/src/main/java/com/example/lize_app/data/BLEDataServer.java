@@ -13,8 +13,10 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
 
+import com.example.lize_app.SampleGattAttributes;
 import com.example.lize_app.injector.ApplicationContext;
 import com.example.lize_app.utils.Log;
+import com.example.lize_app.utils.MyNamingStrategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +52,9 @@ public class BLEDataServer {
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
 
+            // Ignore all devices without name.
+            if(result.getDevice().getName() == null) { return; }
+
             BLEData d = findBLEDataByDevice(result.getDevice());
             d.rssi = result.getRssi();
             if (mLEScanEmitter != null) {
@@ -61,6 +66,10 @@ public class BLEDataServer {
         public void onBatchScanResults(List<ScanResult> results) {
             if (mLEScanEmitter != null) {
                 for (ScanResult r : results) {
+
+                    // Ignore all devices without name.
+                    if(r.getDevice().getName() == null) { return; }
+
                     BLEData d = findBLEDataByDevice(r.getDevice());
                     d.rssi = r.getRssi();
                     mLEScanEmitter.onNext(d);
@@ -77,6 +86,7 @@ public class BLEDataServer {
         }
     };
 
+    // TODO mGattCallback
     private BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
 
         @Override
@@ -110,8 +120,7 @@ public class BLEDataServer {
                 // Add CCCD to all Characteristics
                 for (BluetoothGattService service:gatt.getServices()) {
                     for (BluetoothGattCharacteristic characteristic:service.getCharacteristics()) {
-                        // TODO UUID
-                        if(String.valueOf(characteristic.getUuid()).equals("0000fff6-0000-1000-8000-00805f9b34fb")) {
+                        if(SampleGattAttributes.checkSubscribed(String.valueOf(characteristic.getUuid()))) {
                             boolean success = gatt.setCharacteristicNotification(characteristic, true);
                             if (success) {
                                 // 来源：http://stackoverflow.com/questions/38045294/oncharacteristicchanged-not-called-with-ble
@@ -140,23 +149,8 @@ public class BLEDataServer {
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
-            BLEData d = findBLEData(gatt);
-            List<ObservableEmitter<BLEData>> subscribers = findObservableEmitter(gatt);
-
             if (status == BluetoothGatt.GATT_SUCCESS) {
-
-                if(!d.Values.containsKey(characteristic.getService())) {
-                    d.Values.put(characteristic.getService(), new HashMap());
-                }
-                if(!d.Values.get(characteristic.getService()).containsKey(characteristic)) {
-                    ArrayList arrayList = new ArrayList();
-                    d.Values.get(characteristic.getService()).put(characteristic, arrayList);
-                }
-                d.Values.get(characteristic.getService()).get(characteristic).add(characteristic.getValue());
-
-                for (ObservableEmitter<BLEData> s : subscribers) {
-                    s.onNext(d);
-                }
+                whenFetchingData(gatt, characteristic);
             }
         }
 
@@ -167,25 +161,8 @@ public class BLEDataServer {
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-
-            Log.e(String.valueOf(characteristic.getUuid()));
-
             super.onCharacteristicChanged(gatt, characteristic);
-            BLEData d = findBLEData(gatt);
-            List<ObservableEmitter<BLEData>> subscribers = findObservableEmitter(gatt);
-
-            if(!d.Values.containsKey(characteristic.getService())) {
-                d.Values.put(characteristic.getService(), new HashMap());
-            }
-            if(!d.Values.get(characteristic.getService()).containsKey(characteristic)) {
-                ArrayList arrayList = new ArrayList();
-                d.Values.get(characteristic.getService()).put(characteristic, arrayList);
-            }
-            d.Values.get(characteristic.getService()).get(characteristic).add(characteristic.getValue());
-
-            for (ObservableEmitter<BLEData> s : subscribers) {
-                s.onNext(d);
-            }
+            whenFetchingData(gatt, characteristic);
         }
 
         @Override
@@ -233,6 +210,8 @@ public class BLEDataServer {
         mbluetoothAdapter = bluetoothAdapter;
     }
 
+    // TODO Otherfunction
+
     Observable<BLEDataServer.BLEData> scanBLEPeripheral(final boolean enabled) {
 
         return Observable.create(new ObservableOnSubscribe<BLEDataServer.BLEData>() {
@@ -250,26 +229,27 @@ public class BLEDataServer {
         });
     }
 
+    final boolean AutoConnect = true;
     Observable<BLEData> connect(final BluetoothDevice device) {
         // if device is already connected,
         return Observable.create(new ObservableOnSubscribe<BLEData>() {
             @Override
             public void subscribe(ObservableEmitter<BLEData> e) throws Exception {
-                BluetoothGatt gatt = findBluetoothGatt(device);
+            BluetoothGatt gatt = findBluetoothGatt(device);
 
-                if (gatt == null) {
-                    gatt = device.connectGatt(mContext, false, mGattCallback);
-                } else {
-                    gatt.connect();
-                    e.onNext(findBLEData(gatt));
-                }
+            if (gatt == null) {
+                gatt = device.connectGatt(mContext, AutoConnect, mGattCallback);
+            } else {
+                gatt.connect();
+                e.onNext(findBLEData(gatt));
+            }
 
-                for (Map.Entry<ObservableEmitter<BLEData>, BluetoothGatt> entry:mGattMap.entrySet()) {
-                    if(entry.getValue().equals(gatt)) {
-                        mGattMap.remove(entry.getKey());
-                    }
+            for (Map.Entry<ObservableEmitter<BLEData>, BluetoothGatt> entry:mGattMap.entrySet()) {
+                if(entry.getValue().equals(gatt)) {
+                    mGattMap.remove(entry.getKey());
                 }
-                mGattMap.put(e, gatt);
+            }
+            mGattMap.put(e, gatt);
             }
         });
     }
@@ -306,6 +286,23 @@ public class BLEDataServer {
     public void stopCentralMode() {
         // stop scan
         // disconnect from all gatt
+    }
+
+    public void whenFetchingData(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+        BLEData d = findBLEData(gatt);
+        List<ObservableEmitter<BLEData>> subscribers = findObservableEmitter(gatt);
+
+        if(!d.Values.containsKey(characteristic.getService())) {
+            d.Values.put(characteristic.getService(), new HashMap());
+        }
+        if(!d.Values.get(characteristic.getService()).containsKey(characteristic)) {
+            d.Values.get(characteristic.getService()).put(characteristic, new ArrayList<BLEData.Dataset>());
+        }
+        d.addNewDataIntoDataset(characteristic, characteristic.getValue());
+
+        for (ObservableEmitter<BLEData> s : subscribers) {
+            s.onNext(d);
+        }
     }
 
     public boolean supportLEAdvertiser() {
@@ -358,44 +355,10 @@ public class BLEDataServer {
         return d;
     }
 
-    public class BLEData {
-        public BluetoothDevice device;
-        public int rssi;
-        public String data; // TODO 正在想可以存甚麼
-        public int connectedState = BluetoothProfile.STATE_DISCONNECTED;
-        public List<BluetoothGattService> services; // 從這裡讀取 UUID, Properties, Value, Descriptor
-
-        public BLEData(BluetoothDevice device) {
-            this.device = device;
-        }
-
-        // Store the value for each time points
-        public HashMap<BluetoothGattService, HashMap<BluetoothGattCharacteristic, ArrayList<byte[]>>> Values = new HashMap<>();
-
-        public boolean in_Emitter() {
-            return (findObservableEmitter(findBluetoothGatt(device)).size()>0) ? true : false;
-        }
-    }
-
-    public boolean readRemoteValues(BluetoothDevice device) {
-        BluetoothGatt gatt = findBluetoothGatt(device);
-
-        if (gatt != null) {
-            for (BluetoothGattService gattService: findBLEDataByDevice(device).services) {
-                List<BluetoothGattCharacteristic> gattCharacteristics = gattService.getCharacteristics();
-                for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
-                    return gatt.readCharacteristic(gattCharacteristic);
-                }
-            }
-        }
-
-        return false;
-    }
-
     // TODO 不知道要 public 好，還是 private 好
     public BLEData findBLEDataByDevice(BluetoothDevice device) {
         for (BLEData d : mBLEDatas) {
-            if (device.equals(d.device)) {
+            if (d.device.equals(device)) {
                 return d;
             }
         }
@@ -435,8 +398,7 @@ public class BLEDataServer {
                     if (((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_WRITE) |
                             (characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE)) > 0) {
 
-                        // TODO UUID
-                        if(String.valueOf(characteristic.getUuid()).equals("0000fff3-0000-1000-8000-00805f9b34fb")) {
+                        if(SampleGattAttributes.checkInput(String.valueOf(characteristic.getUuid()))) {
                             characteristic.setValue(command);
                             gatt.writeCharacteristic(characteristic);
                         }
@@ -448,6 +410,116 @@ public class BLEDataServer {
             gatt.executeReliableWrite();
 
         }
+    }
+
+    public void removeDataByLabelname(BLEDataServer.BLEData bleData, String labelName) {
+        bleData.removeDataByLabelname(labelName);
+        if (mLEScanEmitter != null) {
+            mLEScanEmitter.onNext(bleData);
+        }
+    }
+
+    public void SetAllNameBuffer(String labelName) {
+        for (BluetoothGatt gatt:mGattMap.values()) {
+            findBLEData(gatt).labelNameBuffer = labelName;
+        }
+    }
+
+    public class BLEData {
+        public BluetoothDevice device;
+        public int rssi;
+        public String labelNameBuffer;
+        public int connectedState = BluetoothProfile.STATE_DISCONNECTED;
+        public List<BluetoothGattService> services; // 從這裡讀取 UUID, Properties, Value, Descriptor
+
+        public BLEData(BluetoothDevice device) {
+            this.device = device;
+        }
+
+        // Store the value for each time points
+        public class Dataset {
+            public String labelname;
+            public ArrayList<byte[]> data;
+            public Dataset(String Labelname) {
+                labelname = Labelname;
+                data = new ArrayList<>();
+            }
+            public void addData(byte[] bytes) {
+                data.add(bytes);
+            }
+        }
+        public Dataset createNewDataset() { return new Dataset(labelNameBuffer); }
+        public void addNewDataIntoDataset(BluetoothGattCharacteristic characteristic, byte[] bytes) {
+            for (Dataset d : Values.get(characteristic.getService()).get(characteristic)) {
+                // If the dataset does exist.
+                if(d.labelname.equals(labelNameBuffer)) {
+                    d.addData(bytes);
+                    return;
+                }
+            }
+            // If the dataset doesn't exist.
+            Dataset d = createNewDataset();
+            d.addData(bytes);
+            Values.get(characteristic.getService()).get(characteristic).add(d);
+        }
+        public void addNewDataIntoDataset(BluetoothGattService service, byte[] bytes) {
+            for (BluetoothGattCharacteristic c : service.getCharacteristics()) {
+                addNewDataIntoDataset(c, bytes);
+            }
+        }
+        public void addNewDataIntoDataset(byte[] bytes) {
+            for (BluetoothGattService s : Values.keySet()) {
+                addNewDataIntoDataset(s, bytes);
+            }
+        }
+        public HashMap<BluetoothGattService, HashMap<BluetoothGattCharacteristic, ArrayList<Dataset>>> Values = new HashMap<>();
+
+        public boolean in_Emitter() {
+            return (findObservableEmitter(findBluetoothGatt(device)).size()>0) ? true : false;
+        }
+
+        public ArrayList<byte[]> getDataByLabelname(String LabelName) {
+            // Log.e("getDataByLabelname0");
+            for (HashMap<BluetoothGattCharacteristic, ArrayList<Dataset>> v:Values.values()) {
+                // Log.e("getDataByLabelname1");
+                for (ArrayList<Dataset> datasets:v.values()) {
+                    int index = 0;
+                    for (Dataset d : datasets) {
+                        // Log.e("d.labelname: " + d.labelname);
+                        if(d.labelname.equals(LabelName)) {
+                            return d.data;
+                        }
+                        index++;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public void removeDataByLabelname(String LabelName) {
+            for (HashMap<BluetoothGattCharacteristic, ArrayList<Dataset>> v:Values.values()) {
+                for (ArrayList<Dataset> datasets:v.values()) {
+                    int index = 0;
+                    for (Dataset d : datasets) {
+                        if(d.labelname.equals(LabelName)) {
+                            datasets.remove(index);
+                            break;
+                        }
+                        index++;
+                    }
+                }
+            }
+        }
+    }
+
+    public ArrayList<byte[]> getDataByLabelname(String LabelName) {
+        for (BLEData d : mBLEDatas) {
+            ArrayList<byte[]> data = d.getDataByLabelname(LabelName);
+            if (data != null) {
+                return data;
+            }
+        }
+        return null;
     }
 
 }

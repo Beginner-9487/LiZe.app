@@ -1,9 +1,7 @@
 package com.example.lize_app;
 
-import com.example.lize_app.ui.central.CentralTempUI;
+import com.example.lize_app.utils.OtherUsefulFunction;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
@@ -20,7 +18,7 @@ import static org.junit.Assert.*;
 public class String_to_Byte_array_Unit_Test {
 
     @Test
-    public void string_to_byte() {
+    public void stringToBytes() {
 //        assertEquals(0, "80FF01Fe".getBytes()[0]);
 //        assertEquals(70, "80FF01Fe".getBytes()[3]);
 
@@ -33,10 +31,44 @@ public class String_to_Byte_array_Unit_Test {
 
 //        assertEquals(new byte[] { 65, 66, 67 }, "ABC".getBytes());
 
-        assertEquals(128, new CentralTempUI().hexStringToByteArray("80FF01Fe")[0] & 0xff);
-        assertEquals(0xFF, new CentralTempUI().hexStringToByteArray("80FF01Fe")[1] & 0xff);
-        assertEquals(254, new CentralTempUI().hexStringToByteArray("80FF01Fe")[3] & 0xff);
+        assertEquals(128, OtherUsefulFunction.hexStringToByteArray("80FF01Fe")[0] & 0xff);
+        assertEquals(0xFF, OtherUsefulFunction.hexStringToByteArray("80FF01Fe")[1] & 0xff);
+        assertEquals(254, OtherUsefulFunction.hexStringToByteArray("80FF01Fe")[3] & 0xff);
 
+    }
+
+    @Test
+    public void bytesToString() {
+        byte[] b = {0x00, -0x7f, -0x80, -0x01, 0x01, 0x7f};
+        assertEquals("00, 81, 80, ff, 01, 7f, ", OtherUsefulFunction.byteArrayToHexString(b, ", "));
+        assertEquals("00, -81, -80, -ff, 01, 7f, ", OtherUsefulFunction.byteArrayToHexString(b, ", ", "", "-"));
+        assertEquals(true, 1 == 0x01);
+        assertEquals(false, -81 == -0x7f);
+        assertEquals(true, 256 == 0x01 * 256);
+
+        b = new byte[]{0x51};
+        assertEquals(81, OtherUsefulFunction.byteArrayToSignedInt(b));
+
+        b = new byte[]{-0x01, -0x01, -0x0d, 0x51};
+        assertEquals("ff, ff, f3, 51, ", OtherUsefulFunction.byteArrayToHexString(b, ", "));
+        assertEquals(-3247, OtherUsefulFunction.byteArrayToSignedInt(b));
+        b = new byte[]{0x00, 0x00, -0x31, 0x5f};
+        assertEquals("00, 00, cf, 5f, ", OtherUsefulFunction.byteArrayToHexString(b, ", "));
+        assertEquals(53087, OtherUsefulFunction.byteArrayToSignedInt(b));
+
+        b = new byte[]{0x00, (byte)-16};
+        assertEquals("00, f0, ", OtherUsefulFunction.byteArrayToHexString(b, ", "));
+        assertEquals(240, OtherUsefulFunction.byteArrayToSignedInt(b));
+
+        b = new byte[]{-0x01, -0x01, -0x01, -0x03};
+        assertEquals("ff, ff, ff, fd, ", OtherUsefulFunction.byteArrayToHexString(b, ", "));
+        assertEquals(-3, OtherUsefulFunction.byteArrayToSignedInt(b));
+        b = new byte[]{-0x03};
+        assertEquals("fd, ", OtherUsefulFunction.byteArrayToHexString(b, ", "));
+        assertEquals(-3, OtherUsefulFunction.byteArrayToSignedInt(b));
+        b = new byte[]{(byte)-3, (byte)-88};
+        assertEquals("fd, a8, ", OtherUsefulFunction.byteArrayToHexString(b, ", "));
+        assertEquals(-600, OtherUsefulFunction.byteArrayToSignedInt(b));
     }
 
     // =====================================================================================

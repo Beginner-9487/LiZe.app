@@ -1,33 +1,32 @@
-package org.zpcat.ble.ui.main;
+package com.example.lize_app.ui.main;
 
-import android.support.test.espresso.intent.Intents;
-import android.support.test.espresso.intent.matcher.IntentMatchers;
-import android.support.test.espresso.matcher.ViewMatchers;
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.espresso.intent.Intents;
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.mikepenz.aboutlibraries.ui.LibsActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.zpcat.ble.R;
-import org.zpcat.ble.ui.central.CentralActivity;
-import org.zpcat.ble.ui.peripheral.PeripheralActivity;
-import org.zpcat.ble.utils.BLEIntents;
+import com.example.lize_app.R;
+import com.example.lize_app.ui.central.CentralActivity;
+import com.example.lize_app.ui.peripheral.PeripheralActivity;
+import com.example.lize_app.utils.BLEIntents;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 /**
  * Created by suzhenxi on 9/19/2016.
  */
-@RunWith(AndroidJUnit4.class)
+@RunWith(AndroidJUnit4ClassRunner.class)
 public class MainActivityTest {
 
     @Rule
@@ -36,13 +35,13 @@ public class MainActivityTest {
 
     @Test
     public void testDisplayed() {
-        onView(withId(R.id.central))
+        onView(withId(R.id.Central_Button))
                 .check(matches(isDisplayed()));
 
-        onView(withId(R.id.peripheral))
+        onView(withId(R.id.Peripheral_Button))
                 .check(matches(isDisplayed()));
 
-        onView(withId(R.id.about))
+        onView(withId(R.id.About_Button))
                 .check(matches(isDisplayed()));
     }
 
@@ -50,7 +49,7 @@ public class MainActivityTest {
     public void testAboutIntent() {
         Intents.init();
 
-        onView(withId(R.id.about))
+        onView(withId(R.id.About_Button))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
@@ -63,7 +62,7 @@ public class MainActivityTest {
     public void testCentralIntent() {
         Intents.init();
 
-        onView(withId(R.id.central))
+        onView(withId(R.id.Central_Button))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
@@ -77,7 +76,7 @@ public class MainActivityTest {
     public void testPeripheralIntent() {
         Intents.init();
 
-        onView(withId(R.id.peripheral))
+        onView(withId(R.id.Peripheral_Button))
                 .check(matches(isDisplayed()))
                 .perform(click());
 

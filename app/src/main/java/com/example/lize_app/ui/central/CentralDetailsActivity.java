@@ -228,10 +228,10 @@ public class CentralDetailsActivity extends BaseActivity implements CentralMvpVi
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mRssiField.setText(" " + data.rssi);
-                    mConnectionState.setText((data.connectedState == BluetoothProfile.STATE_CONNECTED) ? "Connected" : "Disconnected");
-                    mDataField.setText(data.data);
-                    displayGattServices(data.services);
+                mRssiField.setText(String.valueOf(data.rssi));
+                mConnectionState.setText((data.connectedState == BluetoothProfile.STATE_CONNECTED) ? getResources().getString(R.string.Connected) : getResources().getString(R.string.Disconnected));
+                mDataField.setText(data.labelNameBuffer);
+                displayGattServices(data.services);
                 }
             });
         }
@@ -242,8 +242,8 @@ public class CentralDetailsActivity extends BaseActivity implements CentralMvpVi
 
         if (gattServices == null) return;
         String uuid = null;
-        String unknownServiceString = getResources().getString(R.string.unknown_service);
-        String unknownCharaString = getResources().getString(R.string.unknown_characteristic);
+        String unknownServiceString = getResources().getString(R.string.UnknownService);
+        String unknownCharaString = getResources().getString(R.string.UnknownCharacteristic);
         ArrayList<HashMap<String, String>> gattServiceData = new ArrayList<HashMap<String, String>>();
         ArrayList<ArrayList<HashMap<String, String>>> gattCharacteristicData
                 = new ArrayList<ArrayList<HashMap<String, String>>>();

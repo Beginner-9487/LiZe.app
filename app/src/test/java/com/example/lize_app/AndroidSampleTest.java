@@ -1,4 +1,4 @@
-package com.example.lize_app.test;
+package com.example.lize_app;
 
 import android.content.Context;
 

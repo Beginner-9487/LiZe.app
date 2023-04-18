@@ -46,7 +46,6 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
         //List<BluetoothDevice> devices = mDataManager.getRemoteDevices();
         List<BLEDataServer.BLEData> datas = mDataManager.getRemoteBLEDatas();
 
-        Log.e(String.valueOf(datas.size()));
         for(BLEDataServer.BLEData data: datas) {
             getMvpView().showBLEData(data);
         }
@@ -213,9 +212,6 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
         return mDataManager.readRemoteRssi(device);
     }
 
-    public boolean readRemoteValues(BluetoothDevice device) {
-        return mDataManager.readRemoteValues(device);
-    }
 
 
     public List<BLEDataServer.BLEData> getRemoteBLEDatas() {
@@ -244,8 +240,31 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
 
     // =================================================================================================
     // Temp UI
+
     public void Send_All_C(byte[] command) {
         mDataManager.Send_All_C(command);
     }
+    public void SetAllNameBuffer(String labelName) {
+        mDataManager.SetAllNameBuffer(labelName);
+    }
 
+    // =================================================================================================
+    // Test
+    public BLEDataServer getBLEDataServer() {
+        return mDataManager.getmBLEServer();
+    }
+
+    public void removeDataByLabelname(BLEDataServer.BLEData bleData, String labelName) {
+        mDataManager.removeDataByLabelname(bleData, labelName);
+    }
+
+    static CentralTempUI centralTempUI;
+    public void setCentralTempUI(CentralTempUI c) {
+        centralTempUI = c;
+    }
+    public boolean saveMyFile(String LabelName, String XLabel, String YLabel, String AllDataString) {
+
+        return centralTempUI.saveExcelFile(LabelName, XLabel, YLabel, AllDataString);
+
+    }
 }

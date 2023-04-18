@@ -4,13 +4,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.example.lize_app.injector.component.ViewpagerAdapterComponent;
-
 // Since this is an object collection, use a FragmentStatePagerAdapter,
 // and NOT a FragmentPagerAdapter.
 public class BaseViewpagerAdapter extends FragmentStatePagerAdapter {
 
-    // 這只是 ViewPage 的 Adapter 的容器，沒甚麼重要的東西
     // http://uirate.net/?p=10958
 
     //2.宣告變數為mFragments
@@ -39,17 +36,18 @@ public class BaseViewpagerAdapter extends FragmentStatePagerAdapter {
         return mTitles[position];
     }
 
-    private ViewpagerAdapterComponent mFragmentComponent;
-
+//  Issue: mFragments[0].getActivity() == null
+//    private ViewpagerAdapterComponent mViewpagerAdapterComponent;
+//
 //    public ViewpagerAdapterComponent getViewpagerAdapterComponent() {
-//        if (mFragmentComponent == null && mFragments[0] != null) {
-//            mFragmentComponent = DaggerPagerAdapterComponent.builder()
+//        if (mViewpagerAdapterComponent == null && mFragments[0] != null) {
+//            mViewpagerAdapterComponent = DaggerViewpagerAdapterComponent.builder()
 //                .applicationComponent(((BLEApplication)mFragments[0].getActivity().getApplication()).getApplicationComponent())
 //                .viewpagerAdapterModule(new ViewpagerAdapterModule(this))
 //                .build();
 //        }
 //
-//        return mFragmentComponent;
+//        return mViewpagerAdapterComponent;
 //    }
 
 }

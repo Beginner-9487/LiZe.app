@@ -34,7 +34,7 @@ public class PermissionAgreeFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(message)
             .setPositiveButton(
-                getResources().getString(R.string.Fragment_OK),
+                getResources().getString(android.R.string.ok),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -48,7 +48,7 @@ public class PermissionAgreeFragment extends DialogFragment {
                 }
             )
             .setNegativeButton(
-                getResources().getString(R.string.Fragment_Cancel),
+                getResources().getString(android.R.string.cancel),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

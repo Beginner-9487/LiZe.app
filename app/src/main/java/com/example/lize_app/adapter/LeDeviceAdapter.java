@@ -5,7 +5,7 @@ import com.example.lize_app.data.BLEDataServer;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
-import android.util.Log;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,25 +44,24 @@ public class LeDeviceAdapter extends RecyclerView.Adapter<LeDeviceAdapter.Device
     public void onBindViewHolder(final DeviceViewHolder holder, final int position) {
         BluetoothDevice bt = mLeDevices.get(position);
         BLEDataServer.BLEData data = mBLEDataMap.get(bt);
-        Log.d("LeDeviceAdapter", "position(" + position + "), " + bt.toString());
+        // Log.d("LeDeviceAdapter", "position(" + position + "), " + bt.toString());
 
-        holder.deviceName.setText("Name: " + bt.getName());
-        holder.deviceAddress.setText("Address: " + bt.getAddress());
+        holder.deviceName.setText(holder.resources.getString(R.string.DeviceName) + ": " + bt.getName());
+        holder.deviceAddress.setText(holder.resources.getString(R.string.DeviceAddress) + ": " + bt.getAddress());
 
-        Log.e("LeDeviceAdapter", bt.getName() + ": connectedState: " + String.valueOf(data.connectedState));
+        // Log.e("LeDeviceAdapter", bt.getName() + ": connectedState: " + String.valueOf(data.connectedState));
 
-        // TODO Color
         if (data != null) {
 
             if (data.connectedState == BluetoothProfile.STATE_CONNECTED) {
                 holder.deviceCard.setBackgroundResource(R.color.Connected_Card);
-                holder.deviceState.setText("State: Connected");
+                holder.deviceState.setText(holder.resources.getString(R.string.State) + ": " + holder.resources.getString(R.string.Connected));
             } else {
                 holder.deviceCard.setBackgroundResource(R.color.Disconnected_Card);
-                holder.deviceState.setText("State: Disconnected");
+                holder.deviceState.setText(holder.resources.getString(R.string.State) + ": " + holder.resources.getString(R.string.Disconnected));
             }
 
-            holder.deviceRSSI.setText("Rssi: " + data.rssi);
+            holder.deviceRSSI.setText(holder.resources.getString(R.string.State) + ": " + data.rssi);
         }
 
         if (data == null || data.connectedState == BluetoothProfile.STATE_DISCONNECTED) {
@@ -148,6 +147,8 @@ public class LeDeviceAdapter extends RecyclerView.Adapter<LeDeviceAdapter.Device
 
     public class DeviceViewHolder extends RecyclerView.ViewHolder {
 
+        Resources resources;
+
         TextView deviceName;
         TextView deviceAddress;
         TextView deviceState;
@@ -160,6 +161,7 @@ public class LeDeviceAdapter extends RecyclerView.Adapter<LeDeviceAdapter.Device
 
         public DeviceViewHolder(View itemView) {
             super(itemView);
+            resources = itemView.getResources();
 
             deviceCard = (CardView) itemView.findViewById(R.id.device_card);
             deviceName = (TextView) itemView.findViewById(R.id.device_name);
@@ -168,6 +170,10 @@ public class LeDeviceAdapter extends RecyclerView.Adapter<LeDeviceAdapter.Device
             deviceRSSI = (TextView) itemView.findViewById(R.id.rssi);
             Connect_Button = (Button) itemView.findViewById(R.id.Connect_Button);
             Pair_Button = (Button) itemView.findViewById(R.id.Pair_Button);
+        }
+
+        public String getDeviceName() {
+            return deviceName.getText().toString();
         }
     }
 

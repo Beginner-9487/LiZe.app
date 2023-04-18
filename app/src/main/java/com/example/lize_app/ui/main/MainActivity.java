@@ -65,7 +65,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         Peripheral_btn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(BLEIntents.ACTION_PERIPHERAL_MODE));
+                startPeripheralMode();
             }
         });
         About_btn.setOnClickListener( new View.OnClickListener() {

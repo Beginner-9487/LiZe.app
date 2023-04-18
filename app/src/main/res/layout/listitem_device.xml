@@ -32,27 +32,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp">
-        <TextView android:id="@+id/device_name"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:textSize="26dp"/>
-        <TextView android:id="@+id/device_address"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:textSize="18dp"/>
+        <TextView
+            android:id="@+id/device_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="26dp"
+            android:text="@string/DeviceName"/>
+        <TextView
+            android:id="@+id/device_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:text="@string/DeviceAddress"/>
         <TextView
             android:id="@+id/rssi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18dp"
             android:textAlignment="textStart"
-            android:text="@string/listitem_device_RSSI"/>
+            android:text="@string/RSSI"/>
         <TextView
             android:id="@+id/connection_state"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18dp"
-            android:text="@string/listitem_device_State"/>
+            android:text="@string/State"/>
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
