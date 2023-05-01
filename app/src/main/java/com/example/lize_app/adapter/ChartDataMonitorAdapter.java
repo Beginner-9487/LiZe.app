@@ -9,36 +9,36 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lize_app.R;
-import com.example.lize_app.ui.central.CentralChartFragment;
+import com.example.lize_app.data.CentralDataManager;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChartDataDisplayerAdapter extends RecyclerView.Adapter<ChartDataDisplayerAdapter.DataViewHolder> {
+public class ChartDataMonitorAdapter extends RecyclerView.Adapter<ChartDataMonitorAdapter.DataViewHolder> {
 
-    private final List<CentralChartFragment.LabelData> mLabelDatas = new ArrayList<>();
+    private final List<CentralDataManager.LabelData> mLabelDatas = new ArrayList<>();
 
     float x = 0.0f;
     DecimalFormat df = new DecimalFormat("0");
 
-    private ChartDataDisplayerAdapter.DataItemClickListener mListener;
+    private ChartDataMonitorAdapter.DataItemClickListener mListener;
 
     View view;
 
     @Override
-    public ChartDataDisplayerAdapter.DataViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ChartDataMonitorAdapter.DataViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.central_chart_item, parent, false);
 
-        ChartDataDisplayerAdapter.DataViewHolder viewHolder = new ChartDataDisplayerAdapter.DataViewHolder(view);
+        ChartDataMonitorAdapter.DataViewHolder viewHolder = new ChartDataMonitorAdapter.DataViewHolder(view);
 
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(final ChartDataDisplayerAdapter.DataViewHolder holder, final int position) {
-        CentralChartFragment.LabelData labelData = mLabelDatas.get(position);
+    public void onBindViewHolder(final ChartDataMonitorAdapter.DataViewHolder holder, final int position) {
+        CentralDataManager.LabelData labelData = mLabelDatas.get(position);
 
         if(!labelData.show) {
             holder.dataCard.setVisibility(View.GONE);
@@ -48,7 +48,7 @@ public class ChartDataDisplayerAdapter extends RecyclerView.Adapter<ChartDataDis
 
         holder.labelName.setText(holder.resources.getString(R.string.LabelName) + ": " + labelData.labelName);
         holder.labelX.setText(labelData.xLabel + ": ");
-        holder.labelY.setText(labelData.yLabel + ": ");
+        holder.labelY.setText(labelData.specialLabel + ": ");
 
         df.setMaximumFractionDigits(340);
 
@@ -80,7 +80,7 @@ public class ChartDataDisplayerAdapter extends RecyclerView.Adapter<ChartDataDis
         x = X;
     }
 
-    public CentralChartFragment.LabelData getDataAtIndex(int index) {
+    public CentralDataManager.LabelData getDataAtIndex(int index) {
         if (index < mLabelDatas.size()) {
             return mLabelDatas.get(index);
         }
@@ -88,7 +88,7 @@ public class ChartDataDisplayerAdapter extends RecyclerView.Adapter<ChartDataDis
         return null;
     }
 
-    public void addData(CentralChartFragment.LabelData labelData) {
+    public void addData(CentralDataManager.LabelData labelData) {
         if (labelData != null && !mLabelDatas.contains(labelData)) {
             mLabelDatas.add(labelData);
         }
@@ -98,14 +98,14 @@ public class ChartDataDisplayerAdapter extends RecyclerView.Adapter<ChartDataDis
         mLabelDatas.clear();
     }
 
-    public void setDatas(ArrayList<CentralChartFragment.LabelData> LabelDatas) {
+    public void setDatas(ArrayList<CentralDataManager.LabelData> LabelDatas) {
         clearDatas();
         for (int i=0; i<LabelDatas.size(); i++) {
             addData(LabelDatas.get(i));
         }
     }
 
-    public void setListener(ChartDataDisplayerAdapter.DataItemClickListener listener) {
+    public void setListener(ChartDataMonitorAdapter.DataItemClickListener listener) {
         mListener = listener;
     }
 

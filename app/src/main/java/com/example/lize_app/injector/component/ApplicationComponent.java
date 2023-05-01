@@ -6,6 +6,7 @@ import android.bluetooth.le.BluetoothLeScanner;
 
 import com.example.lize_app.data.BLEDataServer;
 import com.example.lize_app.data.BLEPeripheralServer;
+import com.example.lize_app.data.CentralDataManager;
 import com.example.lize_app.data.DataManager;
 import com.example.lize_app.injector.module.ApplicationModule;
 
@@ -29,4 +30,6 @@ public interface ApplicationComponent {
 
     DataManager dataManager();
     BLEDataServer bleDataServer();
+
+    CentralDataManager centralDataManager();
 }

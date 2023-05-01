@@ -17,6 +17,7 @@ import com.example.lize_app.SampleGattAttributes;
 import com.example.lize_app.injector.ApplicationContext;
 import com.example.lize_app.utils.Log;
 import com.example.lize_app.utils.MyNamingStrategy;
+import com.example.lize_app.utils.OtherUsefulFunction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class BLEDataServer {
 
     // BlueGatt -> BLEData
     // BlueGatt -> ObservableEmitter
-    private List<BLEData> mBLEDatas = new ArrayList<>();
+    private List<BLEData> mBLEData = new ArrayList<>();
     private Map<ObservableEmitter<BLEData>, BluetoothGatt> mGattMap = new HashMap<>();
 
     private ScanCallback mScanCallback = new ScanCallback() {
@@ -265,7 +266,7 @@ public class BLEDataServer {
     }
 
     public List<BLEData> getRemoteBLEDatas() {
-        return mBLEDatas;
+        return mBLEData;
     }
 
     public boolean readRemoteRssi(BluetoothDevice device) {
@@ -289,16 +290,19 @@ public class BLEDataServer {
     }
 
     public void whenFetchingData(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+        updateLastReceivedData(gatt, characteristic);
+    }
+    public void updateLastReceivedData(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         BLEData d = findBLEData(gatt);
         List<ObservableEmitter<BLEData>> subscribers = findObservableEmitter(gatt);
 
-        if(!d.Values.containsKey(characteristic.getService())) {
-            d.Values.put(characteristic.getService(), new HashMap());
+        if(!d.lastReceivedData.containsKey(characteristic.getService())) {
+            d.lastReceivedData.put(characteristic.getService(), new HashMap());
         }
-        if(!d.Values.get(characteristic.getService()).containsKey(characteristic)) {
-            d.Values.get(characteristic.getService()).put(characteristic, new ArrayList<BLEData.Dataset>());
+        if(!d.lastReceivedData.get(characteristic.getService()).containsKey(characteristic)) {
+            d.lastReceivedData.get(characteristic.getService()).put(characteristic, new ArrayList<byte[]>());
         }
-        d.addNewDataIntoDataset(characteristic, characteristic.getValue());
+        d.lastReceivedData.get(characteristic.getService()).get(characteristic).add(characteristic.getValue());
 
         for (ObservableEmitter<BLEData> s : subscribers) {
             s.onNext(d);
@@ -343,35 +347,31 @@ public class BLEDataServer {
     }
 
     private BLEData findBLEData(BluetoothGatt gatt) {
-        for (BLEData d : mBLEDatas) {
+        for (BLEData d : mBLEData) {
             if (gatt.getDevice().equals(d.device)) {
                 return d;
             }
         }
 
         BLEData d = new BLEData(gatt.getDevice());
-        mBLEDatas.add(d);
+        mBLEData.add(d);
 
         return d;
     }
 
     // TODO 不知道要 public 好，還是 private 好
     public BLEData findBLEDataByDevice(BluetoothDevice device) {
-        for (BLEData d : mBLEDatas) {
+        for (BLEData d : mBLEData) {
             if (d.device.equals(device)) {
                 return d;
             }
         }
 
         BLEData d = new BLEData(device);
-        mBLEDatas.add(d);
+        mBLEData.add(d);
 
         return d;
     }
-
-//    public ArrayList<ArrayList<byte[]>> readValues(BluetoothDevice device) {
-//        return findBLEDataByDevice(device).Values;
-//    }
 
     public void createBond(BluetoothDevice device) {
         findBLEDataByDevice(device);    // 沒有就加入
@@ -412,114 +412,32 @@ public class BLEDataServer {
         }
     }
 
-    public void removeDataByLabelname(BLEDataServer.BLEData bleData, String labelName) {
-        bleData.removeDataByLabelname(labelName);
-        if (mLEScanEmitter != null) {
-            mLEScanEmitter.onNext(bleData);
-        }
-    }
-
-    public void SetAllNameBuffer(String labelName) {
-        for (BluetoothGatt gatt:mGattMap.values()) {
-            findBLEData(gatt).labelNameBuffer = labelName;
-        }
+    public byte[] getDeviceData(BluetoothDevice bluetoothDevice, String UUID) {
+        return findBLEDataByDevice(bluetoothDevice).getLastReceivedData(UUID);
     }
 
     public class BLEData {
         public BluetoothDevice device;
         public int rssi;
-        public String labelNameBuffer;
         public int connectedState = BluetoothProfile.STATE_DISCONNECTED;
         public List<BluetoothGattService> services; // 從這裡讀取 UUID, Properties, Value, Descriptor
-
+        public HashMap<BluetoothGattService, HashMap<BluetoothGattCharacteristic, ArrayList<byte[]>>> lastReceivedData = new HashMap<>();
         public BLEData(BluetoothDevice device) {
             this.device = device;
         }
-
-        // Store the value for each time points
-        public class Dataset {
-            public String labelname;
-            public ArrayList<byte[]> data;
-            public Dataset(String Labelname) {
-                labelname = Labelname;
-                data = new ArrayList<>();
-            }
-            public void addData(byte[] bytes) {
-                data.add(bytes);
-            }
-        }
-        public Dataset createNewDataset() { return new Dataset(labelNameBuffer); }
-        public void addNewDataIntoDataset(BluetoothGattCharacteristic characteristic, byte[] bytes) {
-            for (Dataset d : Values.get(characteristic.getService()).get(characteristic)) {
-                // If the dataset does exist.
-                if(d.labelname.equals(labelNameBuffer)) {
-                    d.addData(bytes);
-                    return;
-                }
-            }
-            // If the dataset doesn't exist.
-            Dataset d = createNewDataset();
-            d.addData(bytes);
-            Values.get(characteristic.getService()).get(characteristic).add(d);
-        }
-        public void addNewDataIntoDataset(BluetoothGattService service, byte[] bytes) {
-            for (BluetoothGattCharacteristic c : service.getCharacteristics()) {
-                addNewDataIntoDataset(c, bytes);
-            }
-        }
-        public void addNewDataIntoDataset(byte[] bytes) {
-            for (BluetoothGattService s : Values.keySet()) {
-                addNewDataIntoDataset(s, bytes);
-            }
-        }
-        public HashMap<BluetoothGattService, HashMap<BluetoothGattCharacteristic, ArrayList<Dataset>>> Values = new HashMap<>();
-
-        public boolean in_Emitter() {
-            return (findObservableEmitter(findBluetoothGatt(device)).size()>0) ? true : false;
-        }
-
-        public ArrayList<byte[]> getDataByLabelname(String LabelName) {
-            // Log.e("getDataByLabelname0");
-            for (HashMap<BluetoothGattCharacteristic, ArrayList<Dataset>> v:Values.values()) {
-                // Log.e("getDataByLabelname1");
-                for (ArrayList<Dataset> datasets:v.values()) {
-                    int index = 0;
-                    for (Dataset d : datasets) {
-                        // Log.e("d.labelname: " + d.labelname);
-                        if(d.labelname.equals(LabelName)) {
-                            return d.data;
+        public byte[] getLastReceivedData(String UUID) {
+            for (HashMap<BluetoothGattCharacteristic, ArrayList<byte[]>> s:lastReceivedData.values()) {
+                for (Map.Entry<BluetoothGattCharacteristic, ArrayList<byte[]>> c:s.entrySet()) {
+                    if(String.valueOf(c.getKey().getUuid()).equals(UUID)) {
+                        if(c.getValue().size() > 0) {
+                            return c.getValue().remove(0);
                         }
-                        index++;
+                        return null;
                     }
                 }
             }
             return null;
         }
-
-        public void removeDataByLabelname(String LabelName) {
-            for (HashMap<BluetoothGattCharacteristic, ArrayList<Dataset>> v:Values.values()) {
-                for (ArrayList<Dataset> datasets:v.values()) {
-                    int index = 0;
-                    for (Dataset d : datasets) {
-                        if(d.labelname.equals(LabelName)) {
-                            datasets.remove(index);
-                            break;
-                        }
-                        index++;
-                    }
-                }
-            }
-        }
-    }
-
-    public ArrayList<byte[]> getDataByLabelname(String LabelName) {
-        for (BLEData d : mBLEDatas) {
-            ArrayList<byte[]> data = d.getDataByLabelname(LabelName);
-            if (data != null) {
-                return data;
-            }
-        }
-        return null;
     }
 
 }

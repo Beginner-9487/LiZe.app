@@ -6,14 +6,11 @@ import com.example.lize_app.R;
 import com.example.lize_app.data.BLEDataServer;
 import com.example.lize_app.ui.base.BaseFragment;
 import com.example.lize_app.utils.MyNamingStrategy;
-import com.example.lize_app.utils.My_Excel_File;
 import com.example.lize_app.utils.OtherUsefulFunction;
 
-import android.Manifest;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -26,15 +23,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -93,8 +85,9 @@ public class CentralTempUI extends BaseFragment implements CentralMvpView {
         super.onAttach(context);
         getFragmentComponent().inject(this);
         mCentralPresenter.attachView(this);
-        mCentralPresenter.attach_for_Data();
+        mCentralPresenter.initForBLEDatas();
         mCentralPresenter.setCentralTempUI(this);
+        mCentralPresenter.setCurrentView(this.getActivity());
     }
 
     @Override
@@ -122,7 +115,7 @@ public class CentralTempUI extends BaseFragment implements CentralMvpView {
         c3_btn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkExternalStoragePermission()) {
+                if(OtherUsefulFunction.checkExternalStoragePermission(getActivity())) {
                     SetNamingStrategy();
                     mCentralPresenter.Send_All_C(OtherUsefulFunction.hexStringToByteArray(command_edit.getText().toString()));
                     command_edit.setText("");
@@ -174,114 +167,20 @@ public class CentralTempUI extends BaseFragment implements CentralMvpView {
         // data_text.setText(String.valueOf(new Date().getTime()));
     }
 
-    private boolean checkExternalStoragePermission() {
-
-        return OtherUsefulFunction.checkPermissionList(
-            getActivity(),
-            true,
-            getResources().getString(R.string.ExternalStoragePermissionAgreeFragment),
-            new String[] {
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-            },
-            0,
-            getActivity().getSupportFragmentManager(),
-            getResources().getString(R.string.ExternalStoragePermissionTag)
-        );
-
-    }
-
-    public MyNamingStrategy myNamingStrategy = new MyNamingStrategy();
     public void SetNamingStrategy() {
         switch(senior_RadioGroup.getCheckedRadioButtonId()) {
             case R.id.RadioLiZe:
-                myNamingStrategy.setNormal(dataname_text.getText().toString());
+                mCentralPresenter.SetAllNamingStrategy(new MyNamingStrategy().setNormal(dataname_text.getText().toString()));
                 break;
             case R.id.RadioXieZhiLong:
                 int limit = 1;
                 try {
                     limit = parseInt(fileIndexLimit_text.getText().toString());
                 } catch (Exception e) {}
-                myNamingStrategy.setXieZhiLong(dataname_text.getText().toString(), null, limit);
-                break;
-        }
-        mCentralPresenter.SetAllNameBuffer(myNamingStrategy.getName());
-    }
-    public void SetRadioButtonForTest(int Mode) {
-        switch(Mode) {
-            case 0:
-                senior_RadioGroup.setId(R.id.RadioLiZe);
-                break;
-            case 1:
-                senior_RadioGroup.setId(R.id.RadioXieZhiLong);
+                mCentralPresenter.SetAllNamingStrategy(new MyNamingStrategy().setXieZhiLong(dataname_text.getText().toString(), null, limit));
                 break;
         }
     }
 
-    public boolean saveExcelFile(String LabelName, String XLabel, String YLabel, String AllDataString) {
-
-        if(checkExternalStoragePermission()) {
-
-            mCentralPresenter.getRemoteDevices();
-            // Log.e("LabelName: " + String.valueOf(LabelName));
-
-            Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH-mm-ss");
-            String currentTime = sdf.format(calendar.getTime());
-
-            My_Excel_File file = new My_Excel_File();
-            String sdCardPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator;
-            file.createExcelWorkbook(sdCardPath + LabelName + ".xls");
-            file.create_new_sheet(LabelName);
-
-            BluetoothDevice bt = null;
-            ArrayList<byte[]> rawData = null;
-            for (Map.Entry<BluetoothDevice, BLEDataServer.BLEData> e : mData.entrySet()) {
-                rawData = e.getValue().getDataByLabelname(LabelName);
-                if(rawData != null) {
-                    bt = e.getKey();
-                    break;
-                }
-            }
-            // Log.e(getResources().getString(R.string.LabelName) + ": " + LabelName + ", " + getResources().getString(R.string.RawData) + ": " + rawData.toString());
-            if(rawData == null) {return false;}
-
-            // Add value in the cell
-            int rowIndex = 0;
-            file.write_file(0, rowIndex, 0, getResources().getString(R.string.DeviceName) + ": " + ((bt!=null)?bt.getName():"Null"));
-            rowIndex++;
-            file.write_file(0, rowIndex, 0, getResources().getString(R.string.DeviceAddress) + ": " + ((bt!=null)?bt.getAddress():"Null"));
-            rowIndex++;
-            file.write_file(0, rowIndex, 0, getResources().getString(R.string.LabelName) + ": " + LabelName);
-            rowIndex++;
-            file.write_file(0, rowIndex, 0, getResources().getString(R.string.SaveFileTime) + ": " + currentTime);
-            rowIndex++;
-            file.write_file(0, rowIndex, 0, getResources().getString(R.string.Number) + ": ");
-            file.write_file(0, rowIndex, 1, XLabel);
-            file.write_file(0, rowIndex, 2, YLabel);
-            file.write_file(0, rowIndex, 3, getResources().getString(R.string.RawData) + ": ");
-
-            String [] eachData = AllDataString.split("\n");
-            for(int i=0; i<eachData.length; i++) {
-                int index = parseInt(eachData[i].split(": ")[0]);
-                file.write_file(0, rowIndex+1+index, 0, String.valueOf(index));
-                file.write_file(0, rowIndex+1+index, 1, eachData[i].split(": ")[1].split(", ")[0]);
-                file.write_file(0, rowIndex+1+index, 2, eachData[i].split(": ")[1].split(", ")[1]);
-                file.write_file(0, rowIndex+1+index, 3, OtherUsefulFunction.byteArrayToHexString(rawData.get(i), "", "", ""));
-            }
-
-            // Save as Excel XLSX file
-            if (file.exportDataIntoWorkbook()) {
-                // Log.i(getResources().getString(R.string.Temp_UI_save_toast));
-                Toast.makeText(getView().getContext(), LabelName + ": " + getResources().getString(R.string.Temp_UI_save_toast), Toast.LENGTH_SHORT).show();
-                mCentralPresenter.SetAllNameBuffer(myNamingStrategy.getName());
-                return true;
-            }
-
-        }
-
-        return false;
-
-    }
 }
 

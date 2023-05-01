@@ -1,16 +1,33 @@
 package com.example.lize_app.ui.central;
 
+import static java.lang.Integer.parseInt;
+
 import android.bluetooth.BluetoothDevice;
+import android.content.res.Resources;
+import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 
+import androidx.fragment.app.FragmentActivity;
+
+import com.example.lize_app.R;
 import com.example.lize_app.data.BLEDataServer;
+import com.example.lize_app.data.CentralDataManager;
 import com.example.lize_app.data.DataManager;
 import com.example.lize_app.ui.base.BasePresenter;
 import com.example.lize_app.utils.Log;
+import com.example.lize_app.utils.MyNamingStrategy;
+import com.example.lize_app.utils.My_Excel_File;
+import com.example.lize_app.utils.OtherUsefulFunction;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -26,13 +43,15 @@ import io.reactivex.schedulers.Schedulers;
 public class CentralPresenter extends BasePresenter<CentralMvpView> {
 
     private DataManager mDataManager;
+    private CentralDataManager mCentralDataManager;
 
     private Disposable mScanDisposable;
     private final HashMap<BluetoothDevice, Disposable> mConnectedDisposable;
 
     @Inject
-    public CentralPresenter(DataManager dataManager) {
+    public CentralPresenter(DataManager dataManager, CentralDataManager centralDataManager) {
         mDataManager = dataManager;
+        mCentralDataManager = centralDataManager;
         mConnectedDisposable = new HashMap<>();
     }
 
@@ -41,13 +60,11 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
         super.attachView(centralView);
     }
 
-    public void attach_for_Data() {
-        // send all deivces to view here;
-        //List<BluetoothDevice> devices = mDataManager.getRemoteDevices();
-        List<BLEDataServer.BLEData> datas = mDataManager.getRemoteBLEDatas();
+    public void initForBLEDatas() {
+        List<BLEDataServer.BLEData> data = mDataManager.getRemoteBLEDatas();
 
-        for(BLEDataServer.BLEData data: datas) {
-            getMvpView().showBLEData(data);
+        for(BLEDataServer.BLEData d: data) {
+            getMvpView().showBLEData(d);
         }
     }
 
@@ -77,14 +94,14 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
         try {
             checkViewAttached();
 
-            List<BLEDataServer.BLEData> datas = mDataManager.getRemoteBLEDatas();
+            List<BLEDataServer.BLEData> data = mDataManager.getRemoteBLEDatas();
 
-            for(BLEDataServer.BLEData data: datas) {
-                getMvpView().showBLEDevice(data.device);
-                getMvpView().showBLEData(data);
+            for(BLEDataServer.BLEData d: data) {
+                getMvpView().showBLEDevice(d.device);
+                getMvpView().showBLEData(d);
             }
         } catch (Exception e) {
-            Log.e(e.getMessage());
+            // Log.e(e.getMessage());
         }
     }
 
@@ -110,8 +127,6 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
             Log.e(e.getMessage());
         }
     }
-
-
 
     public void connectGatt(BluetoothDevice device) {
         try {
@@ -152,8 +167,6 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
         }
     }
 
-
-
     public void createBond(BLEDataServer.BLEData data) {
         try {
             checkViewAttached();
@@ -164,14 +177,10 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
         }
     }
 
-
-
-
-
     private static final int READ_RSSI_REPEAT = 1;
-    private final long READING_RSSI_TASK_FREQENCY = 2000;
+    private final long READING_RSSI_TASK_FREQUENCY = 2000;
 
-    private final Handler mHandler = new Handler() {
+    private final Handler mHandler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -184,7 +193,7 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
 
                     sendMessageDelayed(
                             obtainMessage(READ_RSSI_REPEAT),
-                            READING_RSSI_TASK_FREQENCY
+                            READING_RSSI_TASK_FREQUENCY
                     );
                     break;
             }
@@ -203,18 +212,13 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
         mHandler.removeMessages(READ_RSSI_REPEAT);
     }
 
-
-
-
-
-
     public boolean readRemoteRssi(BluetoothDevice device) {
         return mDataManager.readRemoteRssi(device);
     }
 
 
 
-    public List<BLEDataServer.BLEData> getRemoteBLEDatas() {
+    public List<BLEDataServer.BLEData> getRemoteBLEData() {
         return mDataManager.getRemoteBLEDatas();
     }
 
@@ -222,12 +226,12 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
         try {
             checkViewAttached();
 
-            // send all deivces to view here;
-            List<BLEDataServer.BLEData> datas = mDataManager.getAllBondedDevices();
+            // send all devices to view here;
+            List<BLEDataServer.BLEData> data = mDataManager.getAllBondedDevices();
 
-            for(BLEDataServer.BLEData data: datas) {
-                getMvpView().showBLEDevice(data.device);
-                getMvpView().showBLEData(data);
+            for(BLEDataServer.BLEData d: data) {
+                getMvpView().showBLEDevice(d.device);
+                getMvpView().showBLEData(d);
             }
 
         } catch (Exception e) {
@@ -244,27 +248,45 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
     public void Send_All_C(byte[] command) {
         mDataManager.Send_All_C(command);
     }
-    public void SetAllNameBuffer(String labelName) {
-        mDataManager.SetAllNameBuffer(labelName);
+
+    public void removeLabelDataOfBLE(BLEDataServer.BLEData bleData, String labelName) {
+        mCentralDataManager.findDeviceDataByBle(bleData).removeLabelDataOfBLE(labelName);
     }
 
-    // =================================================================================================
-    // Test
-    public BLEDataServer getBLEDataServer() {
-        return mDataManager.getmBLEServer();
-    }
-
-    public void removeDataByLabelname(BLEDataServer.BLEData bleData, String labelName) {
-        mDataManager.removeDataByLabelname(bleData, labelName);
+    public void SetAllNamingStrategy(MyNamingStrategy labelNameStrategy) {
+        for(CentralDataManager.DeviceData d: mCentralDataManager.deviceData) {
+            d.labelNamingStrategy = labelNameStrategy;
+        }
     }
 
     static CentralTempUI centralTempUI;
     public void setCentralTempUI(CentralTempUI c) {
         centralTempUI = c;
     }
-    public boolean saveMyFile(String LabelName, String XLabel, String YLabel, String AllDataString) {
-
-        return centralTempUI.saveExcelFile(LabelName, XLabel, YLabel, AllDataString);
-
+    public void updateLabelData(Resources resources, BLEDataServer.BLEData bleData) {
+        mCentralDataManager.updateLabelData(resources, bleData);
     }
+    public ArrayList<CentralDataManager.DeviceData> getDeviceData() {
+        return mCentralDataManager.deviceData;
+    }
+    public String[] getDataTypes(Resources resources) {
+        mCentralDataManager.DataTypes = resources.getStringArray(R.array.DataTypes);
+        return mCentralDataManager.DataTypes;
+    }
+
+    public void setCurrentView(FragmentActivity activity) {
+        mCentralDataManager.activity = activity;
+    }
+
+    public boolean saveMyFile(FragmentActivity activity, CentralDataManager.LabelData labelData) {
+        setCurrentView(activity);
+        return labelData.saveMyFile();
+    }
+
+    // =================================================================================================
+    // Test
+    public BLEDataServer getBLEDataServer() {
+        return mDataManager.getBLEServer();
+    }
+
 }

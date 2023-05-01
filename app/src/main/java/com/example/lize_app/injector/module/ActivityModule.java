@@ -2,6 +2,7 @@ package com.example.lize_app.injector.module;
 
 import android.app.Activity;
 
+import com.example.lize_app.data.CentralDataManager;
 import com.example.lize_app.data.DataManager;
 import com.example.lize_app.ui.central.CentralPresenter;
 import com.example.lize_app.ui.main.MainPresenter;
@@ -33,8 +34,8 @@ public class ActivityModule {
     }
 
     @Provides
-    public CentralPresenter provideCentralPresenter(DataManager dataManager) {
-        return new CentralPresenter(dataManager);
+    public CentralPresenter provideCentralPresenter(DataManager dataManager, CentralDataManager centralDataManager) {
+        return new CentralPresenter(dataManager, centralDataManager);
     }
 
 }

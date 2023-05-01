@@ -2,6 +2,8 @@ package com.example.lize_app.data;
 
 import android.bluetooth.BluetoothDevice;
 
+import com.example.lize_app.utils.MyNamingStrategy;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,14 +19,12 @@ import io.reactivex.Observable;
 public class DataManager {
 
     private BLEDataServer mBLEServer;
-    public BLEDataServer getmBLEServer() {
+    public BLEDataServer getBLEServer() {
         return mBLEServer;
     }
 
     @Inject
-    public DataManager(BLEDataServer bleServer) {
-        mBLEServer = bleServer;
-    }
+    public DataManager(BLEDataServer bleServer) { mBLEServer = bleServer; }
 
     public void startCentralMode() {
         mBLEServer.startCentralMode();
@@ -77,21 +77,14 @@ public class DataManager {
         return mBLEServer.getAllBondedDevices();
     }
 
+    public byte[] getLastReceivedData(BluetoothDevice bluetoothDevice, String UUID) {
+        return mBLEServer.getDeviceData(bluetoothDevice, UUID);
+    }
+
     // =================================================================================================
     // Temp UI
     public void Send_All_C(byte[] command) {
         mBLEServer.Send_All_C(command);
-    }
-    public void SetAllNameBuffer(String labelName) {
-        mBLEServer.SetAllNameBuffer(labelName);
-    }
-
-    public void removeDataByLabelname(BLEDataServer.BLEData bleData, String labelName) {
-        mBLEServer.removeDataByLabelname(bleData, labelName);
-    }
-
-    public ArrayList<byte[]> getDataByLabelname(String LabelName) {
-        return mBLEServer.getDataByLabelname(LabelName);
     }
 
 }

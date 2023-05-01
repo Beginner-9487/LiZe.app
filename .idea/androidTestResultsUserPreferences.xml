@@ -3,7 +3,35 @@
   <component name="AndroidTestResultsUserPreferences">
     <option name="androidTestResultsTableState">
       <map>
+        <entry key="-1171951489">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Pixel_3a_API_30_x86" value="120" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="-1040490152">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Pixel_3a_API_30_x86" value="120" />
+                  <entry key="R5CW109PDFP" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="samsung&#10; SM-A5360" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="-476436155">
           <value>
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
@@ -29,7 +57,7 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
-        <entry key="413762013">
+        <entry key="161088478">
           <value>
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
@@ -37,6 +65,21 @@
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_3a_API_30_x86" value="120" />
                   <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="413762013">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Pixel_3a_API_30_x86" value="120" />
+                  <entry key="R5CW109PDFP" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="samsung&#10; SM-A5360" value="120" />
                 </map>
               </option>
             </AndroidTestResultsTableState>
@@ -69,6 +112,19 @@
           </value>
         </entry>
         <entry key="1149082970">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Pixel_3a_API_30_x86" value="120" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="2137447756">
           <value>
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">

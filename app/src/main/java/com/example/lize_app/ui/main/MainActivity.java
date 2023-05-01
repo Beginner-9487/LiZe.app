@@ -1,6 +1,5 @@
 package com.example.lize_app.ui.main;
 
-import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
@@ -27,8 +26,6 @@ import javax.inject.Inject;
 
 public class MainActivity extends BaseActivity implements MainMvpView {
 
-    private static final int REQUEST_ENABLE_BT = 1;
-    public static final int REQUEST_LOCATION_CODE = 10;
 
 //    @BindView(R.id.Central_Button)
     Button Central_btn;
@@ -89,7 +86,9 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         // Checks if Bluetooth is enabled
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            if (OtherUsefulFunction.checkBluetoothPermission(this)) {
+                startActivityForResult(enableBtIntent, OtherUsefulFunction.REQUEST_BLUETOOTH_CODE);
+            }
             return;
         }
     }
@@ -97,7 +96,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // User chose not to enable Bluetooth.
-        if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
+        if (requestCode == OtherUsefulFunction.REQUEST_BLUETOOTH_CODE && resultCode == Activity.RESULT_CANCELED) {
             finish();
             return;
         }
@@ -130,7 +129,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case REQUEST_LOCATION_CODE:
+            case OtherUsefulFunction.REQUEST_LOCATION_CODE:
                 if (grantResults.length > 0) {
                     //great;
                 }
@@ -140,7 +139,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     @Override
 //    @OnClick(R.id.Central_Button)
     public void startCentralMode() {
-        if (checkLocationPermission()) {
+        if (OtherUsefulFunction.checkLocationPermission(this)) {
             startActivity(new Intent(BLEIntents.ACTION_CENTRAL_MODE));
         }
     }
@@ -161,23 +160,6 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             .withAboutVersionShown(true)
             .withAboutDescription(getResources().getString(R.string.AboutDescription))
             .start(this);
-    }
-
-    private boolean checkLocationPermission() {
-
-        return OtherUsefulFunction.checkPermissionList(
-            this,
-            true,
-            getResources().getString(R.string.LocationPermissionAgreeFragment),
-            new String[] {
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-            },
-            REQUEST_LOCATION_CODE,
-            getSupportFragmentManager(),
-            getResources().getString(R.string.LocationPermissionTag)
-        );
-
     }
 
 }

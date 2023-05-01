@@ -101,7 +101,7 @@ public class My_Excel_File {
         try {
 
             fileInputStream = new FileInputStream(file);
-            Log.e("Reading from Excel" + file);
+            Log.i("Reading from Excel" + file);
 
             // Create instance having reference to .xls file
             workbook = new HSSFWorkbook(fileInputStream);
@@ -193,7 +193,7 @@ public class My_Excel_File {
         try {
             fileOutputStream = new FileOutputStream(file);
             workbook.write(fileOutputStream);
-            Log.e("Writing file" + file);
+            Log.i("Writing file" + file);
             isSuccess = true;
         } catch (IOException e) {
             Log.e("Error writing Exception: ", e);

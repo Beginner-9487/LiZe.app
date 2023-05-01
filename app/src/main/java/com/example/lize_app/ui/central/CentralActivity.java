@@ -16,6 +16,7 @@
 
 package com.example.lize_app.ui.central;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
@@ -25,11 +26,13 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.lize_app.R;
 import com.example.lize_app.ui.base.BaseActivity;
+import com.example.lize_app.utils.OtherUsefulFunction;
 
 
 import javax.inject.Inject;
@@ -46,18 +49,17 @@ public class CentralActivity extends BaseActivity {
     @Inject
     BluetoothAdapter mBluetoothAdapter;
 
-//    @BindView(R.id.toolbar)
+    // @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-//    @BindView(R.id.ViewPager)
+    // @BindView(R.id.ViewPager)
     ViewPager mViewPager;
+
     public ViewPager getViewPager() {
         return mViewPager;
     }
 
-//    private Unbinder unbinder;
-
-    private static final int REQUEST_ENABLE_BT = 1;
+    // private Unbinder unbinder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,7 +89,9 @@ public class CentralActivity extends BaseActivity {
         // Checks if Bluetooth is enabled
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            if (OtherUsefulFunction.checkBluetoothPermission(this)) {
+                startActivityForResult(enableBtIntent, OtherUsefulFunction.REQUEST_BLUETOOTH_CODE);
+            }
             return;
         }
 
@@ -111,7 +115,9 @@ public class CentralActivity extends BaseActivity {
         if (!mBluetoothAdapter.isEnabled()) {
             if (!mBluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+                if (OtherUsefulFunction.checkBluetoothPermission(this)) {
+                    startActivityForResult(enableBtIntent, OtherUsefulFunction.REQUEST_BLUETOOTH_CODE);
+                }
             }
         }
     }
@@ -119,7 +125,7 @@ public class CentralActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // User chose not to enable Bluetooth.
-        if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
+        if (requestCode == OtherUsefulFunction.REQUEST_BLUETOOTH_CODE && resultCode == Activity.RESULT_CANCELED) {
             finish();
             return;
         }

@@ -2,9 +2,6 @@ package com.example.lize_app.utils;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 
@@ -12,14 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.lize_app.R;
 import com.example.lize_app.fragment.PermissionAgreeFragment;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class OtherUsefulFunction {
 
@@ -56,6 +50,67 @@ public class OtherUsefulFunction {
 
         return b;
 
+    }
+
+    public static final int REQUEST_BLUETOOTH_CODE = 1;
+    /**
+     * Check Bluetooth Permissions have been granted.
+     * <p></p>
+     * {@link OtherUsefulFunction#checkPermissionList(Activity, boolean, String, String[], int, FragmentManager, String)}
+     */
+    public static boolean checkBluetoothPermission(FragmentActivity activity) {
+        return OtherUsefulFunction.checkPermissionList(
+                activity,
+                true,
+                activity.getResources().getString(R.string.BluetoothPermissionAgreeFragment),
+                new String[] {
+                        Manifest.permission.BLUETOOTH_CONNECT
+                },
+                REQUEST_BLUETOOTH_CODE,
+                activity.getSupportFragmentManager(),
+                activity.getResources().getString(R.string.BluetoothPermissionTag)
+        );
+    }
+
+    public static final int REQUEST_LOCATION_CODE = 10;
+    /**
+     * Check Location Permissions have been granted.
+     * <p></p>
+     * {@link OtherUsefulFunction#checkPermissionList(Activity, boolean, String, String[], int, FragmentManager, String)}
+     */
+    public static boolean checkLocationPermission(FragmentActivity activity) {
+        return OtherUsefulFunction.checkPermissionList(
+                activity,
+                true,
+                activity.getResources().getString(R.string.LocationPermissionAgreeFragment),
+                new String[] {
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                },
+                REQUEST_LOCATION_CODE,
+                activity.getSupportFragmentManager(),
+                activity.getResources().getString(R.string.LocationPermissionTag)
+        );
+    }
+    public static final int REQUEST_EXTERNAL_STORAGE_CODE = 0;
+    /**
+     * Check External Storage Permissions have been granted.
+     * <p></p>
+     * {@link OtherUsefulFunction#checkPermissionList(Activity, boolean, String, String[], int, FragmentManager, String)}
+     */
+    public static boolean checkExternalStoragePermission(FragmentActivity activity) {
+        return OtherUsefulFunction.checkPermissionList(
+                activity,
+                true,
+                activity.getResources().getString(R.string.ExternalStoragePermissionAgreeFragment),
+                new String[] {
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                },
+                REQUEST_EXTERNAL_STORAGE_CODE,
+                activity.getSupportFragmentManager(),
+                activity.getResources().getString(R.string.ExternalStoragePermissionTag)
+        );
     }
 
     /**
@@ -131,50 +186,6 @@ public class OtherUsefulFunction {
             value |= (-1L << (8 * bytes.length));
         }
         return (int) value;
-    }
-
-    public static AlertDialog.Builder createMultiSelectDropDown(
-            Context context,
-            String Title,
-            boolean Cancelable,
-            String[] items,
-            boolean[] checkedItems,
-            DialogInterface.OnMultiChoiceClickListener OnMultiChoiceClickListener,
-            String Ok,
-            DialogInterface.OnClickListener OkListener,
-            String Cancel,
-            DialogInterface.OnClickListener CancelListener,
-            String Neutral,
-            DialogInterface.OnClickListener NeutralListener
-    ) {
-        // Initialize alert dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        // set title
-        builder.setTitle(Title);
-        // set dialog non cancelable
-        builder.setCancelable(Cancelable);
-
-        builder.setMultiChoiceItems(items, checkedItems, (OnMultiChoiceClickListener!=null) ? OnMultiChoiceClickListener : (new DialogInterface.OnMultiChoiceClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i, boolean b) {}
-        }));
-
-        builder.setPositiveButton(Ok, (OkListener!=null) ? OkListener : (new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) { }
-        }));
-
-        builder.setNegativeButton(Cancel, (CancelListener!=null) ? CancelListener : (new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) { }
-        }));
-
-        builder.setNeutralButton(Neutral, (NeutralListener!=null) ? NeutralListener : (new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) { }
-        }));
-
-        return builder;
     }
 
 }

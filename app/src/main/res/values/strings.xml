@@ -13,6 +13,9 @@
     <string name="Fragment_SelectAll">Select All</string>
     <string name="Fragment_ClearAll">Clear All</string>
 
+    <!--  BluetoothPermissionAgreeFragment  -->
+    <string name="BluetoothPermissionTag">Bluetooth Permission</string>
+    <string name="BluetoothPermissionAgreeFragment">Request Bluetooth Permission for Bluetooth Devices Connection.</string>
     <!--  LocationPermissionAgreeFragment  -->
     <string name="LocationPermissionTag">Location Permission</string>
     <string name="LocationPermissionAgreeFragment">Request Fine &amp; Coarse Location Permission for Bluetooth Scan.</string>
@@ -29,8 +32,13 @@
 
     <!--  ======================================================================  -->
     <!--  Central_Chart  -->
-    <string name="AboutShowLabelSelector">Show Datas</string>
-    <string name="AboutDeleteLabelSelector">Delete Datas</string>
+    <string name="AboutDataMonitorManager">Data Monitor Manager</string>
+    <string-array name="AboutDataMonitorSelector">
+        <item>Show Data</item>
+        <item>Show Types</item>
+        <item>Delete Data</item>
+        <item>Delete Types</item>
+    </string-array>
     <string name="AboutHighlightSelector">Enter to get a specific X.</string>
     <!--  Name  -->
     <string name="LabelName">LabelName</string>
@@ -41,6 +49,18 @@
     <!--  Y  -->
     <string name="Current">Current</string>
     <string name="unknown_Y_label">Unknown Y</string>
+    <!--  Special  -->
+    <string name="Concentration">Concentration</string>
+    <string name="unknown_Special_label">Unknown Special</string>
+    <!--  Types  -->
+    <string-array name="DataTypes">
+        <item>...</item>
+        <item>...</item>
+        <item>...</item>
+        <item>...</item>
+        <item>Cortisol</item>
+        <item>Lactate</item>
+    </string-array>
 
     <!--  ======================================================================  -->
     <!--  Central_Seletion_Device  -->

@@ -30,17 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            tools:ignore="MissingConstraints">
-
-            <Button
-                android:id="@+id/ShowLabelSelector"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textAlignment="center"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/Devices_List"
-                android:text="@string/AboutShowLabelSelector"
-                android:layout_weight="1"/>
+            android:weightSum="6">
 
             <Space
                 android:layout_width="wrap_content"
@@ -48,14 +38,14 @@
                 android:layout_weight="1"/>
 
             <Button
-                android:id="@+id/DeleteLabelSelector"
+                android:id="@+id/DataMonitorSelector"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textAlignment="center"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/Devices_List"
-                android:text="@string/AboutDeleteLabelSelector"
-                android:layout_weight="1"/>
+                android:text="@string/AboutDataMonitorManager"
+                android:layout_weight="2"/>
 
             <Space
                 android:layout_width="wrap_content"
@@ -70,6 +60,11 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/Devices_List"
                 android:text="@string/ZoomOut"
+                android:layout_weight="1"/>
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"/>
 
         </LinearLayout>

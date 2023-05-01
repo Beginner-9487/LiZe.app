@@ -5,15 +5,19 @@ import com.example.lize_app.adapter.LeDeviceAdapter;
 import com.example.lize_app.data.BLEDataServer;
 import com.example.lize_app.ui.base.BaseFragment;
 import com.example.lize_app.utils.Log;
+import com.example.lize_app.utils.OtherUsefulFunction;
 
+import android.Manifest;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +32,7 @@ public class CentralDevicesFragment extends BaseFragment implements CentralMvpVi
     SwipeRefreshLayout mRefreshLayout;
 
     private LeDeviceAdapter mLeDeviceAdapter;
+
     public LeDeviceAdapter getmLeDeviceAdapter() {
         return mLeDeviceAdapter;
     }
@@ -40,6 +45,7 @@ public class CentralDevicesFragment extends BaseFragment implements CentralMvpVi
         super.onAttach(context);
         com.example.lize_app.utils.Log.d("onAttach");
         getFragmentComponent().inject(this);
+        mCentralPresenter.setCurrentView(this.getActivity());
     }
 
     @Override
@@ -134,13 +140,16 @@ public class CentralDevicesFragment extends BaseFragment implements CentralMvpVi
         mLeDeviceAdapter.notifyDataSetChanged();
     }
 
-    public void onRefreshSwipLayout() { }
+    public void onRefreshSwipLayout() {
+    }
 
     public void startCentralDetailsActivity(BluetoothDevice device) {
-        Intent intent = new Intent(getActivity(), CentralDetailsActivity.class);
-        intent.putExtra(CentralDetailsActivity.EXTRAS_DEVICE_NAME, device.getName());
-        intent.putExtra(CentralDetailsActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
-        startActivity(intent);
+        if (OtherUsefulFunction.checkBluetoothPermission(getActivity())) {
+            Intent intent = new Intent(getActivity(), CentralDetailsActivity.class);
+            intent.putExtra(CentralDetailsActivity.EXTRAS_DEVICE_NAME, device.getName());
+            intent.putExtra(CentralDetailsActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+            startActivity(intent);
+        }
     }
     public void connectGatt(BluetoothDevice device, boolean connection_state_setting) {
         if(connection_state_setting) {

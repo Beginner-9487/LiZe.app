@@ -200,7 +200,7 @@ public class CentralDetailsActivity extends BaseActivity implements CentralMvpVi
         super.onStart();
 
         mCentralPresenter.attachView(this);
-        mCentralPresenter.attach_for_Data();
+        mCentralPresenter.initForBLEDatas();
         mCentralPresenter.startReadRssi();
 
 //        mCentralPresenter.connectGatt(mRemoteDevice);
@@ -230,7 +230,7 @@ public class CentralDetailsActivity extends BaseActivity implements CentralMvpVi
                 public void run() {
                 mRssiField.setText(String.valueOf(data.rssi));
                 mConnectionState.setText((data.connectedState == BluetoothProfile.STATE_CONNECTED) ? getResources().getString(R.string.Connected) : getResources().getString(R.string.Disconnected));
-                mDataField.setText(data.labelNameBuffer);
+                mDataField.setText("");
                 displayGattServices(data.services);
                 }
             });
@@ -291,5 +291,11 @@ public class CentralDetailsActivity extends BaseActivity implements CentralMvpVi
                 new int[] { android.R.id.text1, android.R.id.text2 }
         );
         mGattServicesList.setAdapter(gattServiceAdapter);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        mCentralPresenter.setCurrentView(this);
     }
 }
